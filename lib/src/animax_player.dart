@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:animax_player/src/domain/bloc/controller.dart';
 import 'package:animax_player/src/domain/bloc/metadata.dart';
@@ -189,7 +189,7 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
                   left: 20,
                   child: InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Remix.arrow_left_s_line),
+                    child: const Icon(Iconsax.arrow_left_2_copy),
                   ),
                 ),
                 Center(child: _style.loading),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:animax_player/src/ui/widgets/helpers.dart';
 import 'package:animax_player/src/data/repositories/video.dart';
@@ -61,7 +61,7 @@ class VideoCoreAdViewer extends StatelessWidget {
                                   ),
                                   if (remaing <= 0)
                                     const Icon(
-                                      Remix.skip_right_line,
+                                      Iconsax.arrow_right_4,
                                       color: Colors.white,
                                       size: 20,
                                     ),

@@ -3,9 +3,6 @@ import 'package:animax_player/src/data/repositories/video.dart';
 import 'package:animax_player/src/domain/entities/settings_menu_item.dart';
 
 import 'package:animax_player/src/ui/settings_menu/widgets/secondary_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/caption_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/quality_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/speed_menu.dart';
 import 'package:animax_player/src/ui/settings_menu/main_menu.dart';
 import 'package:animax_player/src/ui/widgets/transitions.dart';
 
@@ -30,7 +27,7 @@ class SettingsMenu extends StatelessWidget {
             controller.closeSettingsMenu();
             controller.showAndHideOverlay(true);
           },
-          child: Container(color: Colors.black.withOpacity(0.9)),
+          child: Container(color: Colors.black.withValues(alpha: 0.9)),
         ),
         CustomOpacityTransition(
           visible: !main,
@@ -42,28 +39,15 @@ class SettingsMenu extends StatelessWidget {
         CustomOpacityTransition(
           visible: main,
           child: const MainMenu(),
-        ), //MAIN MENU
-        CustomOpacityTransition(
-          visible: secondary[0],
-          child: const QualityMenu(),
         ),
-        CustomOpacityTransition(
-          visible: secondary[1],
-          child: const SpeedMenu(),
-        ),
-        CustomOpacityTransition(
-          visible: secondary[2],
-          child: const CaptionMenu(),
-        ),
-        if (items != null)
-          for (int i = 0; i < items.length; i++)
-            CustomOpacityTransition(
-              visible: secondary[i + kDefaultMenus],
-              child: SecondaryMenu(
-                width: items[i].secondaryMenuWidth,
-                children: [items[i].secondaryMenu],
-              ),
+        for (int i = 0; i < items!.length; i++)
+          CustomOpacityTransition(
+            visible: secondary[i + kDefaultMenus],
+            child: SecondaryMenu(
+              width: items[i].secondaryMenuWidth,
+              children: [items[i].secondaryMenu],
             ),
+          ),
       ],
     );
   }

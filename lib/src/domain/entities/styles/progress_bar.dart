@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:animax_player/src/domain/entities/styles/bar.dart';
 
@@ -12,14 +12,14 @@ class ProgressBarStyle {
     Color? backgroundColor,
     this.paddingBeetwen = 12,
   })  : bar = bar ?? BarStyle.progress(),
-        backgroundColor = backgroundColor ?? Colors.black.withOpacity(.8),
+        backgroundColor = backgroundColor ?? Colors.black.withValues(alpha: .8),
         fullScreen = fullScreen ??
-            const Icon(Remix.fullscreen_line, color: Colors.white, size: 24),
+            const Icon(Iconsax.maximize_21_copy, color: Colors.white, size: 20),
         fullScreenExit = fullScreenExit ??
             const Icon(
-              Remix.fullscreen_exit_line,
+              Iconsax.maximize_4_copy,
               color: Colors.white,
-              size: 24,
+              size: 20,
             );
 
   /// It is the padding that will have the icons and the progressBar

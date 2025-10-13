@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:animax_player/src/data/repositories/video.dart';
 import 'package:animax_player/src/ui/settings_menu/settings_menu.dart';
@@ -11,7 +12,14 @@ import 'package:animax_player/src/ui/widgets/helpers.dart';
 
 class VideoCoreOverlay extends StatelessWidget {
   final Widget child;
-  const VideoCoreOverlay({super.key, required this.child});
+  final bool showRewind;
+  final bool showForward;
+  const VideoCoreOverlay({
+    super.key,
+    required this.child,
+    required this.showRewind,
+    required this.showForward,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +70,7 @@ class VideoCoreOverlay extends StatelessWidget {
                                       padding: halfPadding,
                                       onTap: () => controller.aspect(),
                                       child: const Icon(
-                                        Remix.aspect_ratio_line,
+                                        Iconsax.toggle_off_copy,
                                         color: Colors.white,
                                         size: 20,
                                       ),
@@ -74,19 +82,7 @@ class VideoCoreOverlay extends StatelessWidget {
                                       padding: halfPadding,
                                       onTap: () => controller.speed(),
                                       child: const Icon(
-                                        Remix.speed_up_line,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-
-                                  /// HD
-                                  if (!scale)
-                                    SplashCircularIcon(
-                                      padding: halfPadding,
-                                      onTap: () => controller.quality(),
-                                      child: const Icon(
-                                        Remix.hd_line,
+                                        Iconsax.timer_1_copy,
                                         color: Colors.white,
                                         size: 20,
                                       ),
@@ -99,11 +95,23 @@ class VideoCoreOverlay extends StatelessWidget {
                                         padding: halfPadding,
                                         onTap: () => controller.caption(),
                                         child: const Icon(
-                                          Remix.closed_captioning_line,
+                                          Iconsax.creative_commons_copy,
                                           color: Colors.white,
                                           size: 20,
                                         ),
                                       ),
+
+                                  /// HD
+                                  if (!scale)
+                                    SplashCircularIcon(
+                                      padding: halfPadding,
+                                      onTap: () => controller.quality(),
+                                      child: const Icon(
+                                        Iconsax.setting_copy,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
                                 ],
                               ),
                             ],
@@ -128,8 +136,12 @@ class VideoCoreOverlay extends StatelessWidget {
             animation: controller,
             builder: (_, __) => CustomOpacityTransition(
               visible: overlayVisible,
-              child: const Center(
-                child: CenterPlayAndPause(type: CenterPlayAndPauseType.center),
+              child: Center(
+                child: CenterPlayAndPause(
+                  type: CenterPlayAndPauseType.center,
+                  showForward: showForward,
+                  showRewind: showRewind,
+                ),
               ),
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:animax_player/src/domain/entities/styles/bar.dart';
 
 class LockStyle {
@@ -11,11 +11,12 @@ class LockStyle {
     Color? backgroundColor,
     this.paddingBeetwen = 12,
   })  : bar = bar ?? BarStyle.progress(),
-        backgroundColor = backgroundColor ?? Colors.black.withOpacity(.4),
+        backgroundColor =
+            backgroundColor ?? Colors.black.withValues(alpha: 0.3),
         lock = lock ??
-            const Icon(Remix.lock_unlock_line, color: Colors.white, size: 20),
+            const Icon(Iconsax.lock_copy, color: Colors.white, size: 20),
         locked = locked ??
-            const Icon(Remix.lock_line, color: Colors.white, size: 20);
+            const Icon(Iconsax.lock_slash_copy, color: Colors.white, size: 20);
 
   /// It is the padding that will have the icons and the progressBar
   final double paddingBeetwen;

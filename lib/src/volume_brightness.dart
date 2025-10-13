@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter/material.dart';
 
 /// Default builder generate default FVolToast UI
@@ -51,20 +51,20 @@ class _FSliderToastState extends State<_FSliderToast> {
     IconData iconData;
     final type = widget.type;
     if (value <= 0) {
-      iconData = type == 0 ? Remix.volume_mute_line : Icons.brightness_low;
+      iconData = type == 0 ? Iconsax.volume_slash_copy : Iconsax.moon_copy;
     } else if (value < 0.5) {
-      iconData = type == 0 ? Remix.volume_down_line : Icons.brightness_medium;
+      iconData = type == 0 ? Iconsax.volume_low_copy : Icons.brightness_medium;
     } else {
-      iconData = type == 0 ? Remix.volume_up_line : Remix.sun_line;
+      iconData = type == 0 ? Iconsax.volume_high_copy : Iconsax.sun_1_copy;
     }
 
     return Align(
       alignment: const Alignment(0, -0.7),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-        decoration: const BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.3),
+            borderRadius: const BorderRadius.all(Radius.circular(20.0))),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

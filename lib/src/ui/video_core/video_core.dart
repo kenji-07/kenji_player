@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:battery_plus/battery_plus.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter/services.dart';
 
 import 'package:animax_player/src/misc.dart';
@@ -16,7 +16,6 @@ import 'package:animax_player/src/domain/bloc/controller.dart';
 import 'package:animax_player/src/ui/video_core/widgets/ad.dart';
 import 'package:animax_player/src/ui/widgets/helpers.dart';
 
-import 'package:animax_player/src/ui/video_core/widgets/forward_and_rewind/forward_and_rewind.dart';
 import 'package:animax_player/src/ui/video_core/widgets/forward_and_rewind/layout.dart';
 import 'package:animax_player/src/ui/video_core/widgets/aspect_ratio.dart';
 import 'package:animax_player/src/ui/video_core/widgets/orientation.dart';
@@ -24,7 +23,7 @@ import 'package:animax_player/src/ui/video_core/widgets/thumbnail.dart';
 import 'package:animax_player/src/ui/video_core/widgets/buffering.dart';
 import 'package:animax_player/src/ui/video_core/widgets/subtitle.dart';
 import 'package:animax_player/src/ui/video_core/widgets/player.dart';
-import 'package:animax_player/src/ui/widgets/play_and_pause.dart';
+import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
 import 'package:animax_player/src/ui/widgets/transitions.dart';
 import 'package:animax_player/src/ui/overlay/overlay.dart';
 import 'package:animax_player/src/ui/settings_menu/widgets/speed_menu.dart';
@@ -606,15 +605,9 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             child: Container(
               height: double.infinity,
               width: double.infinity,
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
             ),
           ),
-        ),
-        VideoCoreForwardAndRewind(
-          showRewind: showAMomentRewindIcons[0],
-          showForward: showAMomentRewindIcons[1],
-          rewindSeconds: _defaultRewindAmount * _rewindDoubleTapCount,
-          forwardSeconds: _defaultForwardAmount * _forwardDoubleTapCount,
         ),
         VideoCoreForwardAndRewindLayout(
           rewind: GestureDetector(onDoubleTap: _rewind),
@@ -623,18 +616,23 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
         Builder(
           builder: (_) {
             final controller = _query.video(context, listen: true);
-            final metadata = _query.videoMetadata(context);
+
             return Stack(
               children: [
                 const VideoCoreBuffering(),
-                if (metadata.enableShowReplayIconAtVideoEnd)
-                  CustomOpacityTransition(
-                    visible: controller.position >= controller.duration &&
-                        !controller.isShowingOverlay,
-                    child: const Center(
-                      child: PlayAndPause(type: PlayAndPauseType.center),
+                CustomOpacityTransition(
+                  visible: (controller.position >= controller.duration &&
+                          !controller.isShowingOverlay) ||
+                      showAMomentRewindIcons[0] ||
+                      showAMomentRewindIcons[1],
+                  child: Center(
+                    child: CenterPlayAndPause(
+                      type: CenterPlayAndPauseType.center,
+                      showRewind: showAMomentRewindIcons[0],
+                      showForward: showAMomentRewindIcons[1],
                     ),
                   ),
+                ),
               ],
             );
           },
@@ -646,22 +644,33 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             left: 50,
             child: CustomOpacityTransition(
               visible: showSkipStartButton,
-              child: ElevatedButton(
-                onPressed: () {
+              child: GestureDetector(
+                onTap: () {
                   controller.seekTo(metadata.opEnd);
-                  // Товчлуур дарсны дараа шууд нуух
                   setState(() {
                     showSkipStartButton = false;
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.7),
-                  foregroundColor: Colors.white,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: const Text(
+                    "Skip OP",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-                child: const Text("Skip OP"),
               ),
             ),
           ),
+
         // Skip ED Button
         if (!scale && showSkipEndButton)
           Positioned(
@@ -669,23 +678,37 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             right: 50,
             child: CustomOpacityTransition(
               visible: showSkipEndButton,
-              child: ElevatedButton(
-                onPressed: () {
+              child: GestureDetector(
+                onTap: () {
                   controller.seekTo(metadata.edEnd);
                   // Товчлуур дарсны дараа шууд нуух
                   setState(() {
                     showSkipEndButton = false;
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.7),
-                  foregroundColor: Colors.white,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: const Text(
+                    "Skip END",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-                child: const Text("Skip ED"),
               ),
             ),
           ),
+
         VideoCoreOverlay(
+          showRewind: showAMomentRewindIcons[0],
+          showForward: showAMomentRewindIcons[1],
           child: isFullScreen
               ? SizedBox(
                   height: 14,
@@ -772,13 +795,13 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(6),
+          color: Colors.black.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: const Text(
           "Playing in 2x speed",
           style: TextStyle(
-            color: Color.fromRGBO(255, 255, 255, .8),
+            color: Colors.white,
             fontSize: 14,
           ),
         ),
@@ -813,6 +836,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
   Widget _playerLock(bool canScale, overlayVisible) {
     final controller = _query.video(context);
     final bool isFullScreen = controller.isFullScreen;
+    final metadata = _query.videoMetadata(context);
     final style = _query.videoStyle(context);
     return Stack(
       children: [
@@ -823,7 +847,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
               scale: scale,
               child: FittedBox(
                 clipBehavior: Clip.hardEdge,
-                fit: BoxFit.cover,
+                fit: controller.currentAspect,
                 child: SizedBox(
                   width: controller != null
                       ? controller.video!.value.size.width != 0
@@ -850,6 +874,53 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             width: double.infinity,
           ),
         ),
+        // Skip OP Button
+        if (showSkipStartButton)
+          Positioned(
+            bottom: 100,
+            left: 50,
+            child: CustomOpacityTransition(
+              visible: showSkipStartButton,
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.seekTo(metadata.opEnd);
+                  // Товчлуур дарсны дараа шууд нуух
+                  setState(() {
+                    showSkipStartButton = false;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.7),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Skip OP"),
+              ),
+            ),
+          ),
+        // Skip ED Button
+        if (showSkipEndButton)
+          Positioned(
+            bottom: 100,
+            right: 50,
+            child: CustomOpacityTransition(
+              visible: showSkipEndButton,
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.seekTo(metadata.edEnd);
+                  // Товчлуур дарсны дараа шууд нуух
+                  setState(() {
+                    showSkipEndButton = false;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.7),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Skip ED"),
+              ),
+            ),
+          ),
+
         GestureDetector(
           onTap: () => _query.video(context).showAndHideOverlay(),
           behavior: HitTestBehavior.opaque,
@@ -858,7 +929,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             child: Container(
               height: double.infinity,
               width: double.infinity,
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               child: Stack(
                 children: [
                   Align(
@@ -887,10 +958,8 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
                         ? SizedBox(
                             height: 14,
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 15,
-                                right: 15,
-                              ),
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
                               child: Row(
                                 children: [
                                   const Spacer(),
@@ -938,7 +1007,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             '$batteryLevel%',
             style: const TextStyle(color: Colors.white, fontSize: 10),
           ),
-          const Icon(Remix.battery_charge_line, color: Colors.white, size: 16),
+          const Icon(Iconsax.battery_charging, color: Colors.green, size: 16),
         ],
       );
     } else {

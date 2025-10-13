@@ -20,7 +20,11 @@ class VideoCoreThumbnail extends StatelessWidget {
         children: [
           if (thumbnail != null) Positioned.fill(child: thumbnail),
           const Center(
-            child: CenterPlayAndPause(type: CenterPlayAndPauseType.center),
+            child: CenterPlayAndPause(
+              type: CenterPlayAndPauseType.center,
+              showRewind: false,
+              showForward: false,
+            ),
           ),
           Positioned.fill(
             child: GestureDetector(

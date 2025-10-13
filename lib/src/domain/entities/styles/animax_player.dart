@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:animax_player/src/domain/entities/styles/center_play_and_pause.dart';
 
-import 'package:animax_player/src/domain/entities/styles/forward_and_rewind.dart';
 import 'package:animax_player/src/domain/entities/styles/lock.dart';
-import 'package:animax_player/src/domain/entities/styles/play_and_pause.dart';
 import 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
 import 'package:animax_player/src/domain/entities/styles/settings_menu.dart';
 import 'package:animax_player/src/domain/entities/styles/subtitle.dart';
 import 'package:animax_player/src/domain/entities/styles/fullscreen_subtitle.dart';
 
 export 'package:animax_player/src/domain/entities/styles/bar.dart';
-export 'package:animax_player/src/domain/entities/styles/forward_and_rewind.dart';
-export 'package:animax_player/src/domain/entities/styles/play_and_pause.dart';
 export 'package:animax_player/src/domain/entities/styles/center_play_and_pause.dart';
 export 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
 export 'package:animax_player/src/domain/entities/styles/settings_menu.dart';
@@ -25,10 +21,8 @@ class AnimaxPlayerStyle {
   AnimaxPlayerStyle({
     ProgressBarStyle? progressBarStyle,
     LockStyle? lock,
-    PlayAndPauseWidgetStyle? playAndPauseStyle,
     CenterPlayAndPauseWidgetStyle? centerPlayAndPauseStyle,
     SettingsMenuStyle? settingsStyle,
-    ForwardAndRewindStyle? forwardAndRewindStyle,
     SubtitleStyle? subtitleStyle,
     FullscreenSubtitleStyle? fullscreenSubtitleStyle,
     Widget? loading,
@@ -59,9 +53,6 @@ class AnimaxPlayerStyle {
         settingsStyle = settingsStyle ?? SettingsMenuStyle(),
         progressBarStyle = progressBarStyle ?? ProgressBarStyle(),
         lock = lock ?? LockStyle(),
-        forwardAndRewindStyle =
-            forwardAndRewindStyle ?? ForwardAndRewindStyle(),
-        playAndPauseStyle = playAndPauseStyle ?? PlayAndPauseWidgetStyle(),
         centerPlayAndPauseStyle =
             centerPlayAndPauseStyle ?? CenterPlayAndPauseWidgetStyle(),
         textStyle = textStyle ??
@@ -84,14 +75,9 @@ class AnimaxPlayerStyle {
 
   final FullscreenSubtitleStyle fullscreenSubtitleStyle;
 
-  /// With this argument change the icons that appear when double-tapping,
-  /// also the style of the container that indicates when the video will be rewind or forward.
-  final ForwardAndRewindStyle forwardAndRewindStyle;
-
   /// With this argument you will change the play and pause icons, also the style
   /// of the circle that appears behind. Note: The play and pause icons are
   /// the same ones that appear in the progress bar
-  final PlayAndPauseWidgetStyle playAndPauseStyle;
 
   final CenterPlayAndPauseWidgetStyle centerPlayAndPauseStyle;
 
@@ -143,8 +129,6 @@ class AnimaxPlayerStyle {
     LockStyle? lock,
     SubtitleStyle? subtitleStyle,
     FullscreenSubtitleStyle? fullscreenSubtitleStyle,
-    ForwardAndRewindStyle? forwardAndRewindStyle,
-    PlayAndPauseWidgetStyle? playAndPauseStyle,
     CenterPlayAndPauseWidgetStyle? centerPlayAndPauseStyle,
     Widget? thumbnail,
     Widget? header,
@@ -162,9 +146,6 @@ class AnimaxPlayerStyle {
       subtitleStyle: subtitleStyle ?? this.subtitleStyle,
       fullscreenSubtitleStyle:
           fullscreenSubtitleStyle ?? this.fullscreenSubtitleStyle,
-      forwardAndRewindStyle:
-          forwardAndRewindStyle ?? this.forwardAndRewindStyle,
-      playAndPauseStyle: playAndPauseStyle ?? this.playAndPauseStyle,
       centerPlayAndPauseStyle:
           centerPlayAndPauseStyle ?? this.centerPlayAndPauseStyle,
       thumbnail: thumbnail ?? this.thumbnail,
@@ -188,8 +169,6 @@ class AnimaxPlayerStyle {
         other.lock == lock &&
         other.subtitleStyle == subtitleStyle &&
         other.fullscreenSubtitleStyle == fullscreenSubtitleStyle &&
-        other.forwardAndRewindStyle == forwardAndRewindStyle &&
-        other.playAndPauseStyle == playAndPauseStyle &&
         other.centerPlayAndPauseStyle == centerPlayAndPauseStyle &&
         other.thumbnail == thumbnail &&
         other.header == header &&
@@ -208,8 +187,6 @@ class AnimaxPlayerStyle {
         lock.hashCode ^
         subtitleStyle.hashCode ^
         fullscreenSubtitleStyle.hashCode ^
-        forwardAndRewindStyle.hashCode ^
-        playAndPauseStyle.hashCode ^
         centerPlayAndPauseStyle.hashCode ^
         thumbnail.hashCode ^
         header.hashCode ^

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:animax_player/src/data/repositories/video.dart';
 import 'package:animax_player/src/ui/overlay/widgets/progress_bar.dart';
 import 'package:animax_player/src/ui/overlay/widgets/background.dart';
@@ -66,7 +65,7 @@ class OverlayBottomState extends State<OverlayBottom> {
                         padding: halfPadding,
                         onTap: () => controller.openSettingsMenu(),
                         child: const Icon(
-                          Remix.slideshow_view,
+                          Iconsax.element_equal_copy,
                           color: Colors.white,
                           size: 20,
                         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CenterPlayAndPauseWidgetStyle {
   /// With this argument you will change the play and pause icons, also the style
@@ -9,17 +9,24 @@ class CenterPlayAndPauseWidgetStyle {
     Widget? play,
     Widget? pause,
     Widget? replay,
+    Widget? rewind,
+    Widget? forward,
     Color? background,
     this.circleBorder,
-    this.circleRadius = 40,
-  })  : background =
-            background ?? const Color(0xFF295acc).withValues(alpha: 0.8),
+    this.circleRadius = 60,
+  })  : background = background ?? Colors.black.withValues(alpha: 0.3),
         play =
-            play ?? const Icon(Remix.play_fill, color: Colors.white, size: 45),
-        pause = pause ??
-            const Icon(Remix.pause_large_line, color: Colors.white, size: 45),
+            play ?? const Icon(Icons.play_arrow, color: Colors.white, size: 45),
+        pause = pause ?? const Icon(Icons.pause, color: Colors.white, size: 45),
         replay = replay ??
-            const Icon(Remix.repeat_line, color: Colors.white, size: 45);
+            const Icon(Iconsax.refresh_copy, color: Colors.white, size: 30),
+        rewind = rewind ??
+            const Icon(Icons.fast_rewind, color: Colors.white, size: 30),
+        forward = forward ??
+            const Icon(Icons.fast_forward, color: Colors.white, size: 30);
+
+  final Widget rewind;
+  final Widget forward;
 
   /// It is the icon that will have the play of the progress bar and also
   /// the one that appears in the middle of the screen
@@ -63,14 +70,14 @@ class CenterPlayAndPauseWidgetStyle {
   final BoxBorder? circleBorder;
 
   Widget _base(Widget child, Color background) {
-    return SizedBox(
+    return Container(
       width: circleRadius,
       height: circleRadius,
-      // decoration: BoxDecoration(
-      //   shape: BoxShape.circle,
-      //   color: background,
-      //   border: circleBorder,
-      // ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: background,
+        border: circleBorder,
+      ),
       child: child,
     );
   }
@@ -78,4 +85,6 @@ class CenterPlayAndPauseWidgetStyle {
   Widget get playWidget => _base(play, background);
   Widget get pauseWidget => _base(pause, background);
   Widget get replayWidget => _base(replay, background);
+  Widget get rewindWidget => _base(rewind, background);
+  Widget get forwardWidget => _base(forward, background);
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:animax_player/animax_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
@@ -121,7 +121,7 @@ class AnimaxVideoPlayerState extends State<AnimaxVideoPlayer>
                   volume: true, // 1
                   autoPlay: true, // 1
                   caption: true,
-                  style: CustomVideoViewerStyle(
+                  style: CustomAnimaxPlayerStyle(
                       context: context, controller: _controller),
                 )
               : CircularProgressIndicator();
@@ -149,7 +149,7 @@ class AnimaxVideoPlayerState extends State<AnimaxVideoPlayer>
         volume: true, // 1
         autoPlay: true, // 1
         caption: true,
-        style: CustomVideoViewerStyle(
+        style: CustomAnimaxPlayerStyle(
           context: context,
           controller: _controller,
         ),
@@ -259,15 +259,15 @@ class AnimaxVideoPlayerState extends State<AnimaxVideoPlayer>
   }
 }
 
-class CustomVideoViewerStyle extends AnimaxPlayerStyle {
-  CustomVideoViewerStyle({
+class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
+  CustomAnimaxPlayerStyle({
     required BuildContext context,
     required AnimaxPlayerController controller,
   }) : super(
           textStyle: const TextStyle(color: Colors.black),
-          playAndPauseStyle: PlayAndPauseWidgetStyle(background: Colors.white),
+          // centerPlayAndPauseStyle: CenterPlayAndPauseWidgetStyle(background: Colors.white),
           progressBarStyle: ProgressBarStyle(
-            bar: BarStyle.progress(color: Colors.white),
+            bar: BarStyle.progress(color: Colors.red),
           ),
           header: Container(
             width: double.infinity,
@@ -282,7 +282,11 @@ class CustomVideoViewerStyle extends AnimaxPlayerStyle {
               },
               child: Row(
                 children: [
-                  const Icon(Remix.arrow_left_s_line),
+                  const Icon(
+                    Iconsax.arrow_left_2_copy,
+                    size: 15,
+                    color: Colors.white,
+                  ),
                   const SizedBox(width: 5),
                   Expanded(
                     child: Text(
@@ -313,7 +317,7 @@ class CustomVideoViewerStyle extends AnimaxPlayerStyle {
                 themed: SettingsMenuItemThemed(
                   title: "Episodes",
                   subtitle: 'episode',
-                  icon: const Icon(Remix.film_line, color: Colors.white),
+                  icon: const Icon(Iconsax.mobile, color: Colors.white),
                 ),
                 secondaryMenuWidth: 300,
                 secondaryMenu: Padding(

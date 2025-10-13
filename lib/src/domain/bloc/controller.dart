@@ -150,8 +150,6 @@ class AnimaxPlayerController extends ChangeNotifier
     return _video!.value.isPlaying;
   }
 
-  // bool get isPlaying => _video!.value.isPlaying;
-
   bool get isShowingChat => _isShowingChat;
 
   bool get isShowingSpeed => _isShowingSpeed;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animax_player/animax_player.dart';
 import 'default_player/default_player.dart';
-import 'default_player/test.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// 🎬 Эхний хуудас — Play Player товчтой
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -28,42 +26,22 @@ class HomePage extends StatelessWidget {
       backgroundColor: const Color.fromRGBO(246, 245, 250, 1),
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // 👉 Play Player товч дарахад дараагийн хуудсанд шилжинэ
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PlayerPage(),
-                  ),
-                );
-              },
-              child: const Text('Play Player'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // 👉 Play Player товч дарахад дараагийн хуудсанд шилжинэ
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SimpleVideoPlayerTest(),
-                  ),
-                );
-              },
-              child: const Text('Play Player test'),
-            )
-          ],
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PlayerPage(),
+              ),
+            );
+          },
+          child: const Text('Play Player'),
         ),
       ),
     );
   }
 }
 
-// 🎥 Хоёр дахь хуудас — Видео тоглуулагч
 class PlayerPage extends StatelessWidget {
   const PlayerPage({Key? key}) : super(key: key);
 
@@ -77,7 +55,7 @@ class PlayerPage extends StatelessWidget {
         title: const Text('Animax Player'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context), // 👈 буцах үйлдэл
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(

@@ -269,7 +269,7 @@ class Dot extends StatelessWidget {
             height: dotWidth * multiplicator,
             width: dotWidth * multiplicator,
             decoration: BoxDecoration(
-              color: style.bar.identifier.withOpacity(opacity!),
+              color: style.bar.identifier.withValues(alpha: opacity!),
               shape: BoxShape.circle,
             ),
           ),
