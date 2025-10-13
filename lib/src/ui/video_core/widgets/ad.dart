@@ -40,32 +40,20 @@ class VideoCoreAdViewer extends StatelessWidget {
                               (video.adTimeWatched ?? Duration.zero))
                           .inSeconds;
                       return style.skipAdBuilder?.call(video.adTimeWatched!) ??
-                          ClipRRect(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(7),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.7),
+                              borderRadius: BorderRadius.circular(7),
                             ),
-                            child: Container(
-                              color: Colors.black.withValues(alpha: 0.8),
-                              padding: const EdgeInsets.all(5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    remaing > 0
-                                        ? "$remaing seconds remaing"
-                                        : "Skip ad",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  if (remaing <= 0)
-                                    const Icon(
-                                      Iconsax.arrow_right_4,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                ],
+                            child: Text(
+                              remaing > 0
+                                  ? "$remaing seconds remaining"
+                                  : "Skip ad",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
                               ),
                             ),
                           );

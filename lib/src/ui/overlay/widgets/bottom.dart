@@ -48,42 +48,41 @@ class OverlayBottomState extends State<OverlayBottom> {
             height: (style.textStyle.fontSize ?? 14) + barStyle.bar.height,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '${_query.durationFormatter(position)} / ${_query.durationFormatter(duration)}',
-                  style: const TextStyle(fontSize: 12, color: Colors.white),
-                ),
-                Row(
-                  children: [
-                    /// Menu
-                    if (!scale)
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '${_query.durationFormatter(position)} / ${_query.durationFormatter(duration)}',
+                    style: const TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                  Row(
+                    children: [
+                      /// Menu
+                      if (!scale)
+                        SplashCircularIcon(
+                          padding: halfPadding,
+                          onTap: () => controller.openSettingsMenu(),
+                          child: const Icon(
+                            Iconsax.element_equal_copy,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+
+                      /// Full Screen
                       SplashCircularIcon(
                         padding: halfPadding,
-                        onTap: () => controller.openSettingsMenu(),
-                        child: const Icon(
-                          Iconsax.element_equal_copy,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                        onTap: () => controller.openOrCloseFullscreen(),
+                        child: isFullscreen
+                            ? barStyle.fullScreenExit
+                            : barStyle.fullScreen,
                       ),
-
-                    /// Full Screen
-                    SplashCircularIcon(
-                      padding: halfPadding,
-                      onTap: () => controller.openOrCloseFullscreen(),
-                      child: isFullscreen
-                          ? barStyle.fullScreenExit
-                          : barStyle.fullScreen,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                ],
+              )),
           Padding(
             padding: (isFullscreen)
                 ? EdgeInsets.only(bottom: padding, left: 15, right: 15)

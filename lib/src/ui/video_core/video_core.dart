@@ -637,78 +637,24 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             );
           },
         ),
-        // Skip OP Button
-        if (!scale && showSkipStartButton)
-          Positioned(
-            bottom: 100,
-            left: 50,
-            child: CustomOpacityTransition(
-              visible: showSkipStartButton,
-              child: GestureDetector(
-                onTap: () {
-                  controller.seekTo(metadata.opEnd);
-                  setState(() {
-                    showSkipStartButton = false;
-                  });
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: const Text(
-                    "Skip OP",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-        // Skip ED Button
-        if (!scale && showSkipEndButton)
-          Positioned(
-            bottom: 100,
-            right: 50,
-            child: CustomOpacityTransition(
-              visible: showSkipEndButton,
-              child: GestureDetector(
-                onTap: () {
-                  controller.seekTo(metadata.edEnd);
-                  // Товчлуур дарсны дараа шууд нуух
-                  setState(() {
-                    showSkipEndButton = false;
-                  });
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: const Text(
-                    "Skip END",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
         VideoCoreOverlay(
           showRewind: showAMomentRewindIcons[0],
           showForward: showAMomentRewindIcons[1],
+          showSkipStartButton: showSkipStartButton,
+          showSkipEndButton: showSkipEndButton,
+          startButton: () {
+            controller.seekTo(metadata.opEnd);
+            setState(() {
+              showSkipStartButton = false;
+            });
+          },
+          endButton: () {
+            controller.seekTo(metadata.edEnd);
+            // Товчлуур дарсны дараа шууд нуух
+            setState(() {
+              showSkipEndButton = false;
+            });
+          },
           child: isFullScreen
               ? SizedBox(
                   height: 14,
@@ -732,18 +678,19 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
               visible: controller.isShowingOverlay,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Padding(
+                child: SplashCircularIcon(
                   padding: EdgeInsets.only(
                     left: isFullScreen ? 80 : 20,
-                    right: 10,
-                    top: 0,
-                    bottom: 0,
                   ),
-                  child: SplashCircularIcon(
-                    padding: EdgeInsets.all(
-                      style.progressBarStyle.paddingBeetwen / 2,
+                  onTap: () => controller.openLock(),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withValues(alpha: 0.3),
+                      // borderRadius: BorderRadius.circular(7),
                     ),
-                    onTap: () => controller.openLock(),
                     child:
                         controller.isLock ? style.lock.locked : style.lock.lock,
                   ),
@@ -874,53 +821,73 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             width: double.infinity,
           ),
         ),
-        // Skip OP Button
-        if (showSkipStartButton)
-          Positioned(
-            bottom: 100,
-            left: 50,
-            child: CustomOpacityTransition(
-              visible: showSkipStartButton,
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.seekTo(metadata.opEnd);
-                  // Товчлуур дарсны дараа шууд нуух
-                  setState(() {
-                    showSkipStartButton = false;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withValues(alpha: 0.7),
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text("Skip OP"),
-              ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: isFullScreen ? 30 : 10,
+                right: isFullScreen ? 30 : 10,
+                bottom: 100),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomOpacityTransition(
+                    visible: !overlayVisible && showSkipStartButton,
+                    child: GestureDetector(
+                        onTap: () {
+                          controller.seekTo(metadata.opEnd);
+                          setState(() {
+                            showSkipStartButton = false;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: isFullScreen ? 16 : 10,
+                              vertical: isFullScreen ? 10 : 5),
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(0, 202, 19, 1.0),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Text(
+                            "Skip OP",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isFullScreen ? 16 : 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ))),
+                CustomOpacityTransition(
+                    visible: !overlayVisible && showSkipEndButton,
+                    child: GestureDetector(
+                        onTap: () {
+                          controller.seekTo(metadata.edEnd);
+                          setState(() {
+                            showSkipEndButton = false;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: isFullScreen ? 16 : 10,
+                              vertical: isFullScreen ? 10 : 5),
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(0, 202, 19, 1.0),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Text(
+                            "Skip END",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isFullScreen ? 16 : 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ))),
+              ],
             ),
           ),
-        // Skip ED Button
-        if (showSkipEndButton)
-          Positioned(
-            bottom: 100,
-            right: 50,
-            child: CustomOpacityTransition(
-              visible: showSkipEndButton,
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.seekTo(metadata.edEnd);
-                  // Товчлуур дарсны дараа шууд нуух
-                  setState(() {
-                    showSkipEndButton = false;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withValues(alpha: 0.7),
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text("Skip ED"),
-              ),
-            ),
-          ),
-
+        ),
         GestureDetector(
           onTap: () => _query.video(context).showAndHideOverlay(),
           behavior: HitTestBehavior.opaque,
@@ -934,18 +901,19 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Padding(
+                    child: SplashCircularIcon(
                       padding: EdgeInsets.only(
                         left: isFullScreen ? 80 : 20,
-                        right: 10,
-                        top: 0,
-                        bottom: 0,
                       ),
-                      child: SplashCircularIcon(
-                        padding: EdgeInsets.all(
-                          style.progressBarStyle.paddingBeetwen / 2,
+                      onTap: () => controller.openLock(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withValues(alpha: 0.3),
+                          // borderRadius: BorderRadius.circular(7),
                         ),
-                        onTap: () => controller.openLock(),
                         child: controller.isLock
                             ? style.lock.locked
                             : style.lock.lock,

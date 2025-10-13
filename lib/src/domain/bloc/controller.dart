@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +74,6 @@ class AnimaxPlayerController extends ChangeNotifier
       _isShowingQuality = false,
       _isShowingSpeed = false,
       _isShowingAspect = false,
-      _isShowingEposode = false,
       _videoWasPlaying = false,
       _isChangingSource = false;
 
