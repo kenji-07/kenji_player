@@ -464,18 +464,21 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
     final bool overlayVisible = controller.isShowingOverlay;
     return VideoCoreOrientation(
       builder: (isFullScreenLandscape) {
-        return isLock
-            ? isFullScreenLandscape
-                ? _playerLock(isFullScreenLandscape, overlayVisible)
-                : VideoCoreAspectRadio(
-                    child: _playerLock(isFullScreenLandscape, overlayVisible),
-                  )
-            : isFullScreenLandscape
-                ? _globalGesture(isFullScreenLandscape, overlayVisible)
-                : VideoCoreAspectRadio(
-                    child:
-                        _globalGesture(isFullScreenLandscape, overlayVisible),
-                  );
+        return !controller.shouldShowContentVideo
+            ? controller.adDisplayContainer
+            : isLock
+                ? isFullScreenLandscape
+                    ? _playerLock(isFullScreenLandscape, overlayVisible)
+                    : VideoCoreAspectRadio(
+                        child:
+                            _playerLock(isFullScreenLandscape, overlayVisible),
+                      )
+                : isFullScreenLandscape
+                    ? _globalGesture(isFullScreenLandscape, overlayVisible)
+                    : VideoCoreAspectRadio(
+                        child: _globalGesture(
+                            isFullScreenLandscape, overlayVisible),
+                      );
       },
     );
   }
@@ -588,6 +591,9 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             ),
           ),
         ),
+
+        // ========== END IMA ADS ==========
+
         if (!scale) const VideoCoreActiveSubtitleText(),
         GestureDetector(
           onTap: () => _query.video(context).showAndHideOverlay(),
@@ -597,6 +603,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             width: double.infinity,
           ),
         ),
+
         GestureDetector(
           onTap: () => _query.video(context).showAndHideOverlay(),
           behavior: HitTestBehavior.opaque,
@@ -609,10 +616,12 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             ),
           ),
         ),
+
         VideoCoreForwardAndRewindLayout(
           rewind: GestureDetector(onDoubleTap: _rewind),
           forward: GestureDetector(onDoubleTap: _forward),
         ),
+
         Builder(
           builder: (_) {
             final controller = _query.video(context, listen: true);
@@ -637,6 +646,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
             );
           },
         ),
+
         VideoCoreOverlay(
           showRewind: showAMomentRewindIcons[0],
           showForward: showAMomentRewindIcons[1],
@@ -672,6 +682,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
                 )
               : const SizedBox.shrink(),
         ),
+
         if (!scale)
           if (metadata.lock)
             CustomOpacityTransition(
@@ -697,21 +708,28 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
                 ),
               ),
             ),
+
         if (!scale)
           menuPositioned(controller.isShowingSpeed, const SpeedMenu()),
+
         if (!scale)
           menuPositioned(controller.isShowingAspect, const AspectMenu()),
+
         if (!scale)
           menuPositioned(controller.isShowingCaption, const CaptionMenu()),
+
         if (!scale)
           menuPositioned(controller.isShowingQuality, const QualityMenu()),
+
         if (!scale)
           Align(
             alignment: Alignment.topCenter,
             child: buildLongPressSpeedToast(),
           ),
+
         if (!scale) volumeBrightnessToast(),
         const VideoCoreThumbnail(),
+
         if (!scale) const VideoCoreAdViewer(),
       ],
     );

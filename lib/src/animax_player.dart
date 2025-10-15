@@ -37,6 +37,7 @@ class AnimaxPlayer extends StatefulWidget {
     this.caption = true,
     this.contentType = 'video/mp4',
     this.aspect = BoxFit.cover,
+    this.imaAdTagUrl,
     required this.opStart,
     required this.opEnd,
     required this.edStart,
@@ -44,6 +45,8 @@ class AnimaxPlayer extends StatefulWidget {
   });
 
   final Duration seekTo;
+
+  final String? imaAdTagUrl;
 
   final String contentType;
 
@@ -137,10 +140,33 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
   void _initAnimaxPlayer() async {
     _controller.looping = widget.looping;
     _controller.isShowingThumbnail = _style.thumbnail != null;
+
+    // IMA Ad Tag URL шалгах
+    final bool hasAdTagUrl =
+        widget.imaAdTagUrl != null && widget.imaAdTagUrl!.isNotEmpty;
+
+    if (hasAdTagUrl) {
+      // Ad байгаа үед төлөвийг тохируулах
+      _controller.setImaAdTagUrl(widget.imaAdTagUrl!);
+      await _controller.setAdLoadingState(true);
+    } else {
+      // Ad байхгүй үед
+      await _controller.setAdLoadingState(false);
+    }
+
+    // Video initialize хийх
     await _controller.initialize(widget.source, autoPlay: widget.autoPlay);
 
-    if (!mounted) return;
+    // Video дууссаныг мэдэгдэх
+    if (hasAdTagUrl) {
+      _controller.video?.addListener(() {
+        if (_controller.video!.value.isCompleted) {
+          _controller.adsLoader.contentComplete();
+        }
+      });
+    }
 
+    if (!mounted) return;
     setState(() => _initialized = true);
   }
 

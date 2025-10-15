@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:interactive_media_ads/interactive_media_ads.dart';
 
 import 'package:animax_player/src/ui/fullscreen.dart';
 import 'package:animax_player/src/misc.dart';
@@ -38,10 +39,21 @@ class AnimaxPlayerController extends ChangeNotifier
   // Default to BoxFit.cover if no value is stored
   BoxFit _currentAspect = BoxFit.cover;
 
+  late final AdsLoader adsLoader;
+  Timer? _contentProgressTimer;
+
+  final ContentProgressProvider _contentProgressProvider =
+      ContentProgressProvider();
+
   late bool looping;
+
+  bool isAdLoaded = false;
 
   bool _mounted = false;
 
+  String? _imaAdTagUrl;
+
+  AdsManager? _adsManager;
   AnimaxPlayerAd? _activeAd;
   Timer? _activeAdTimeRemaing;
   String? _activeSourceName;
@@ -75,7 +87,8 @@ class AnimaxPlayerController extends ChangeNotifier
       _isShowingSpeed = false,
       _isShowingAspect = false,
       _videoWasPlaying = false,
-      _isChangingSource = false;
+      _isChangingSource = false,
+      _shouldShowContentVideo = false;
 
   BuildContext? context;
   Duration _maxBuffering = Duration.zero;
@@ -163,6 +176,10 @@ class AnimaxPlayerController extends ChangeNotifier
   bool get isChangingSource => _isChangingSource;
 
   BoxFit get currentAspect => _currentAspect;
+
+  bool get shouldShowContentVideo => _shouldShowContentVideo;
+
+  // bool get isAdLoaded => _isAdLoaded;
 
   set isShowingSetttings(bool isShowingSetttings) {
     _isShowingSetttings = isShowingSetttings;
@@ -260,24 +277,185 @@ class AnimaxPlayerController extends ChangeNotifier
   Future<void> dispose() async {
     WidgetsBinding.instance.removeObserver(this);
     _mounted = false;
+    isAdLoaded = false;
     _closeOverlayButtons?.cancel();
     _deleteAdTimer();
     _video?.removeListener(_videoListener);
     _video?.pause();
     _video?.dispose();
+    _contentProgressTimer?.cancel();
+    _adsManager?.destroy();
+    adsLoader.contentComplete();
     // Wakelock.disable();
     print("VIDEO PLAYER DISPOSED");
     super.dispose();
   }
 
+  void setImaAdTagUrl(String url) {
+    _imaAdTagUrl = url;
+  }
+
+  Future<void> setAdLoadingState(bool value) async {
+    isAdLoaded = value;
+    notifyListeners();
+  }
+
+  Future<void> _requestAds(AdDisplayContainer container) {
+    if (_imaAdTagUrl == null) {
+      debugPrint('IMA: Ad tag URL not set');
+      return Future.value();
+    }
+
+    return adsLoader.requestAds(
+      AdsRequest(
+        adTagUrl: _imaAdTagUrl!,
+        contentProgressProvider: _contentProgressProvider,
+      ),
+    );
+  }
+
+  Future<void> _resumeContent() async {
+    debugPrint('IMA: Resuming content');
+    _shouldShowContentVideo = true;
+    notifyListeners();
+
+    debugPrint('shouldShowContentVideo resume: $shouldShowContentVideo');
+
+    if (_adsManager != null) {
+      _contentProgressTimer = Timer.periodic(
+        const Duration(milliseconds: 200),
+        (Timer timer) async {
+          if (_video?.value.isInitialized ?? false) {
+            final Duration? progress = _video?.value.position;
+            if (progress != null) {
+              await _contentProgressProvider.setProgress(
+                progress: progress,
+                duration: _video!.value.duration,
+              );
+            }
+          }
+        },
+      );
+    }
+
+    await _video?.play();
+  }
+
+  Future<void> _pauseContent() async {
+    debugPrint('IMA: Pausing content');
+    _shouldShowContentVideo = false;
+    notifyListeners();
+
+    debugPrint('shouldShowContentVideo pause: $shouldShowContentVideo');
+
+    _contentProgressTimer?.cancel();
+    _contentProgressTimer = null;
+    await _video?.pause();
+  }
+
+  late final AdDisplayContainer adDisplayContainer = AdDisplayContainer(
+    onContainerAdded: (AdDisplayContainer container) {
+      debugPrint('IMA: Container added to view hierarchy');
+
+      // IMA ad tag URL байхгүй бол зар ачаалахгүй
+      if (!isAdLoaded) {
+        debugPrint('IMA: No ad tag URL provided, skipping ads');
+        _resumeContent();
+        return;
+      }
+
+      // Ad ачаалж эхлэх үед video-г түр зогсоох
+      _video?.pause();
+
+      adsLoader = AdsLoader(
+        container: container,
+        onAdsLoaded: (OnAdsLoadedData data) {
+          debugPrint('IMA: Ads loaded successfully');
+          _adsManager = data.manager;
+
+          _adsManager!.setAdsManagerDelegate(
+            AdsManagerDelegate(
+              onAdEvent: (AdEvent event) {
+                debugPrint('IMA: Event ${event.type}');
+
+                switch (event.type) {
+                  case AdEventType.loaded:
+                    // Зар амжилттай ачаалагдсан
+                    setAdLoadingState(true);
+                    _adsManager!.start();
+                    break;
+
+                  case AdEventType.contentPauseRequested:
+                    // Зар эхлэх гэж байна
+                    _pauseContent();
+                    break;
+
+                  case AdEventType.contentResumeRequested:
+                    // Зар дууссан, video-г үргэлжлүүлэх
+                    setAdLoadingState(false);
+                    _resumeContent();
+                    break;
+
+                  case AdEventType.allAdsCompleted:
+                    // Бүх зар дууссан
+                    _adsManager!.destroy();
+                    _adsManager = null;
+                    setAdLoadingState(false);
+                    break;
+
+                  case AdEventType.clicked:
+                    debugPrint('IMA: Ad clicked');
+                    break;
+
+                  case AdEventType.complete:
+                    debugPrint('IMA: Ad completed');
+                    break;
+
+                  case _:
+                }
+              },
+              onAdErrorEvent: (AdErrorEvent event) {
+                debugPrint('IMA: Error ${event.error.message}');
+                // Алдаа гарвал зарыг алгасаад video-г үргэлжлүүлэх
+                setAdLoadingState(false);
+                _resumeContent();
+              },
+            ),
+          );
+
+          _adsManager!.init(settings: AdsRenderingSettings());
+        },
+        onAdsLoadError: (AdsLoadErrorData data) {
+          debugPrint('IMA: Load error ${data.error.message}');
+          _adsManager = null;
+          // Ачаалах алдаа гарвал зарыг алгасах
+          setAdLoadingState(false);
+          _resumeContent();
+        },
+      );
+
+      // Container нэмэгдсний дараа зар хүсэх
+      _requestAds(container);
+    },
+  );
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       print("APP PAUSED");
+      if (!_shouldShowContentVideo) {
+        _adsManager?.resume();
+      }
       _videoWasPlaying = isPlaying;
       if (_videoWasPlaying) pause();
     } else if (state == AppLifecycleState.resumed) {
       print("APP RESUMED");
+      if (_videoWasPlaying) play();
+    } else if (state == AppLifecycleState.inactive) {
+      print("APP INACTIVE");
+      if (!_shouldShowContentVideo && state == AppLifecycleState.resumed) {
+        _adsManager?.pause();
+      }
       if (_videoWasPlaying) play();
     }
   }

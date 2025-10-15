@@ -3,7 +3,7 @@ description: Animax Video Player is a video player for flutter. The video_player
 # repository: https://github.com/GeekyAnts/flick-video-player
 # homepage: https://github.com/GeekyAnts/flick-video-player
 
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ">=3.2.3 <4.0.0"
@@ -23,6 +23,7 @@ dependencies:
   url_launcher: ^6.3.2
   get_storage: ^2.1.1
   iconsax_flutter: ^1.0.1
+  interactive_media_ads: ^0.2.8+1
 
 dev_dependencies:
   flutter_test:

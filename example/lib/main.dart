@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animax_player/animax_player.dart';
 import 'default_player/default_player.dart';
+import 'default_player/test.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,16 +27,30 @@ class HomePage extends StatelessWidget {
       backgroundColor: const Color.fromRGBO(246, 245, 250, 1),
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PlayerPage(),
-              ),
-            );
-          },
-          child: const Text('Play Player'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PlayerPage()),
+                );
+              },
+              child: const Text('Open Animax Player'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AdExampleWidget()),
+                );
+              },
+              child: const Text('Open Default Player with IMA Ads'),
+            ),
+          ],
         ),
       ),
     );
