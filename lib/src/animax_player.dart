@@ -7,11 +7,11 @@ import 'package:animax_player/src/domain/bloc/metadata.dart';
 import 'package:animax_player/src/domain/entities/styles/animax_player.dart';
 import 'package:animax_player/src/domain/entities/video_source.dart';
 import 'package:animax_player/src/ui/video_core/video_core.dart';
+import 'package:animax_player/src/ui/widgets/helpers.dart';
 
 export 'package:video_player/video_player.dart';
 export 'package:animax_player/src/domain/bloc/controller.dart';
 export 'package:animax_player/src/domain/entities/ads.dart';
-export 'package:animax_player/src/domain/entities/settings_menu_item.dart';
 export 'package:animax_player/src/domain/entities/styles/animax_player.dart';
 export 'package:animax_player/src/domain/entities/subtitle.dart';
 export 'package:animax_player/src/domain/entities/video_source.dart';
@@ -32,10 +32,8 @@ class AnimaxPlayer extends StatefulWidget {
     this.enableFullscreenScale = true,
     this.volume = false,
     this.brightness = false,
-    this.enableShowReplayIconAtVideoEnd = true,
     this.lock = true,
     this.caption = true,
-    this.contentType = 'video/mp4',
     this.aspect = BoxFit.cover,
     this.imaAdTagUrl,
     required this.opStart,
@@ -47,8 +45,6 @@ class AnimaxPlayer extends StatefulWidget {
   final Duration seekTo;
 
   final String? imaAdTagUrl;
-
-  final String contentType;
 
   /// OP Start, OP End & END Start, END End
   final Duration opStart;
@@ -109,9 +105,6 @@ class AnimaxPlayer extends StatefulWidget {
   /// this class helps you to hide some player  Caption
   final bool caption;
 
-  ///When the video end, it show a replay icon. If its false, it will never show.
-  final bool enableShowReplayIconAtVideoEnd;
-
   final BoxFit aspect;
 
   @override
@@ -161,7 +154,7 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
     if (hasAdTagUrl) {
       _controller.video?.addListener(() {
         if (_controller.video!.value.isCompleted) {
-          _controller.adsLoader.contentComplete();
+          _controller.adsLoader?.contentComplete();
         }
       });
     }
@@ -187,11 +180,8 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
                   enableFullscreenScale: widget.enableFullscreenScale,
                   volume: widget.volume,
                   brightness: widget.brightness,
-                  enableShowReplayIconAtVideoEnd:
-                      widget.enableShowReplayIconAtVideoEnd,
                   lock: widget.lock,
                   caption: widget.caption,
-                  contentType: widget.contentType,
                   aspect: widget.aspect,
                   opStart: widget.opStart,
                   opEnd: widget.opEnd,
@@ -218,7 +208,20 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
                     child: const Icon(Iconsax.arrow_left_2_copy),
                   ),
                 ),
-                Center(child: _style.loading),
+                Center(
+                    child: Container(
+                  width: _style.centerPlayAndPauseStyle.circleRadius,
+                  height: _style.centerPlayAndPauseStyle.circleRadius,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _style.centerPlayAndPauseStyle.background,
+                  ),
+                  child: SplashCircularIcon(
+                    onTap: () {},
+                    // padding: padding,
+                    child: _style.loading,
+                  ),
+                )),
               ],
             ),
           );

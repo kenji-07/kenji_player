@@ -28,18 +28,18 @@ class AnimaxPlayerController extends ChangeNotifier
   /// To reclaim the resources used by the player call [dispose].
   ///
   /// After [dispose] all further calls are ignored.
-  AnimaxPlayerController() {
-    isShowingSecondarySettingsMenus.addAll(List.filled(8, false));
-  }
 
   final List<AnimaxPlayerAd> adsSeen = [];
-  final List<bool> isShowingSecondarySettingsMenus = [];
 
   final String _aspectKey = 'currentAspect';
+
+  final String _subtitleSizeKey = 'currentSubtitleSize';
   // Default to BoxFit.cover if no value is stored
   BoxFit _currentAspect = BoxFit.cover;
 
-  late final AdsLoader adsLoader;
+  int _currentSubtitleSize = 23;
+
+  AdsLoader? adsLoader;
   Timer? _contentProgressTimer;
 
   final ContentProgressProvider _contentProgressProvider =
@@ -75,12 +75,9 @@ class AnimaxPlayerController extends ChangeNotifier
       _isGoingToOpenOrQuality = false,
       _isGoingToOpenOrSpeed = false,
       _isGoingToOpenOrAspect = false,
-      _isGoingToOpenOrSettings = false,
       _isShowingThumbnail = true,
-      _isShowingSettingsMenu = false,
-      _isShowingMainSettingsMenu = false,
       _isDraggingProgressBar = false,
-      _isShowingChat = false,
+      _isShowingEpisode = false,
       _isShowingSetttings = false,
       _isShowingCaption = false,
       _isShowingQuality = false,
@@ -148,8 +145,6 @@ class AnimaxPlayerController extends ChangeNotifier
 
   Duration get maxBuffering => _maxBuffering;
 
-  bool get isShowingMainSettingsMenu => _isShowingMainSettingsMenu;
-
   bool get isShowingOverlay => _isShowingOverlay;
 
   bool get isFullScreen => _isFullScreen;
@@ -161,7 +156,7 @@ class AnimaxPlayerController extends ChangeNotifier
     return _video!.value.isPlaying;
   }
 
-  bool get isShowingChat => _isShowingChat;
+  bool get isShowingEpisode => _isShowingEpisode;
 
   bool get isShowingSpeed => _isShowingSpeed;
 
@@ -176,6 +171,8 @@ class AnimaxPlayerController extends ChangeNotifier
   bool get isChangingSource => _isChangingSource;
 
   BoxFit get currentAspect => _currentAspect;
+
+  int get currentSubtitleSize => _currentSubtitleSize;
 
   bool get shouldShowContentVideo => _shouldShowContentVideo;
 
@@ -196,8 +193,8 @@ class AnimaxPlayerController extends ChangeNotifier
     notifyListeners();
   }
 
-  set isShowingChat(bool isShowingChat) {
-    _isShowingChat = isShowingChat;
+  set isShowingEpisode(bool isShowingEpisode) {
+    _isShowingEpisode = isShowingEpisode;
     notifyListeners();
   }
 
@@ -215,13 +212,6 @@ class AnimaxPlayerController extends ChangeNotifier
 
   set isBuffering(bool value) {
     _isBuffering = value;
-    notifyListeners();
-  }
-
-  bool get isShowingSettingsMenu => _isShowingSettingsMenu;
-
-  set isShowingSettingsMenu(bool value) {
-    _isShowingSettingsMenu = value;
     notifyListeners();
   }
 
@@ -268,7 +258,7 @@ class AnimaxPlayerController extends ChangeNotifier
       autoPlay: autoPlay,
     );
     // Load the stored aspect ratio when the controller is initialized
-    _loadAspectFromStorage();
+    _loadPlayerSettingsFromStorage();
     print("VIDEO PLAYER INITIALIZED");
     // Wakelock.enable();
   }
@@ -285,7 +275,13 @@ class AnimaxPlayerController extends ChangeNotifier
     _video?.dispose();
     _contentProgressTimer?.cancel();
     _adsManager?.destroy();
-    adsLoader.contentComplete();
+    // adsLoader initialized эсэхийг шалгах
+    try {
+      adsLoader?.contentComplete();
+    } catch (e) {
+      // adsLoader initialized биш бол алдааг үл тоомсорлох
+      debugPrint('AdsLoader not initialized: $e');
+    }
     // Wakelock.disable();
     print("VIDEO PLAYER DISPOSED");
     super.dispose();
@@ -306,12 +302,13 @@ class AnimaxPlayerController extends ChangeNotifier
       return Future.value();
     }
 
-    return adsLoader.requestAds(
-      AdsRequest(
-        adTagUrl: _imaAdTagUrl!,
-        contentProgressProvider: _contentProgressProvider,
-      ),
-    );
+    return adsLoader?.requestAds(
+          AdsRequest(
+            adTagUrl: _imaAdTagUrl!,
+            contentProgressProvider: _contentProgressProvider,
+          ),
+        ) ??
+        Future.value();
   }
 
   Future<void> _resumeContent() async {
@@ -475,79 +472,114 @@ class AnimaxPlayerController extends ChangeNotifier
     bool inheritPosition = true,
     bool autoPlay = true,
   }) async {
+    // Хэрэв өмнөх source-тэй ижил бол skip хийх
+    if (_activeSourceName == name && _video != null) {
+      debugPrint('Same source selected, skipping change');
+      return;
+    }
+
     final double speed = _video?.value.playbackSpeed ?? 1.0;
     final double volume = _video?.value.volume ?? 1.0;
-    final Duration lastPositon = _video != null ? position : Duration.zero;
-
-    // Өмнөх видеог listener-гүй болгох
-    if (_video != null) {
-      _video!.removeListener(_videoListener);
-      _isChangingSource = true;
-      notifyListeners();
-
-      // Өмнөх видеог зогсоож dispose хийх
-      await _video!.pause();
-      await Future.delayed(Duration(milliseconds: 100)); // Жаахан хүлээх
-    }
+    // ЗАСВАР: Actual video position-г авах (beginRange хасахгүй)
+    final Duration lastPosition = _video?.value.position ?? Duration.zero;
 
     // Хадмал орчуулгыг өөрчлөх
     if (source.subtitle != null) {
       final subtitle = source.subtitle![source.intialSubtitle];
       if (subtitle != null) {
-        changeSubtitle(subtitle: subtitle, subtitleName: source.intialSubtitle);
+        changeSubtitle(
+          subtitle: subtitle,
+          subtitleName: source.intialSubtitle,
+        );
       }
     }
 
-    // Үзсэн бүх зарыг устгах
+    // Delete all ads seen
     _ads = source.ads;
     if (_ads != null) {
-      for (int i = 0; i < _ads!.length; i++) {
+      for (int i = _ads!.length - 1; i >= 0; i--) {
         for (final adSeen in adsSeen) {
-          if (_ads![i] == adSeen) _ads?.removeAt(i);
+          if (_ads![i] == adSeen) {
+            _ads?.removeAt(i);
+            break;
+          }
         }
       }
     }
 
+    // Initialize the video
+    final oldVideo = _video;
+    if (oldVideo != null) {
+      _isChangingSource = true;
+      await oldVideo.pause();
+      notifyListeners();
+    }
+
     try {
-      // Шинэ видеог initialize хийх
-      await source.video.initialize();
+      // Шинэ VideoPlayerController үүсгэх (өмнөхийг дахин ашиглахгүй)
+      final VideoPlayerController newVideoController;
 
-      // Өмнөх видеог dispose хийх (шинэ видео амжилттай ачааллагдсаны дараа)
-      final oldVideo = _video;
-      _video = source.video;
+      // Source-ийн video controller нь өмнө initialize хийгдсэн эсэхийг шалгах
+      if (source.video.value.isInitialized) {
+        // Хэрэв аль хэдийн initialize хийгдсэн бол шинэ instance үүсгэх
+        final videoUri = source.video.dataSource;
+        newVideoController = VideoPlayerController.networkUrl(
+          Uri.parse(videoUri),
+          httpHeaders: source.httpHeaders ?? {},
+        );
+      } else {
+        newVideoController = source.video;
+      }
 
+      // Initialize хийх
+      await newVideoController.initialize();
+
+      // Хуучин video-г цэвэрлэх
       if (oldVideo != null) {
+        oldVideo.removeListener(_videoListener);
+        await oldVideo.pause();
         await oldVideo.dispose();
       }
 
-      // Listener нэмэх
+      // Шинэ video-г тохируулах
+      _video = newVideoController;
       _video!.addListener(_videoListener);
       _activeSourceName = name;
       _duration = endRange - beginRange;
-      _isChangingSource = false;
-      notifyListeners();
 
-      // Тохиргоог шинэчлэх
+      // Update with inherited values
       await _video?.setPlaybackSpeed(speed);
       await _video?.setLooping(looping);
       await _video?.setVolume(volume);
 
-      if (inheritPosition && lastPositon > Duration.zero) {
-        await seekTo(lastPositon);
+      // ЗАСВАР: Position-г зөв тохируулах=
+      if (inheritPosition) {
+        // Хэрэв lastPosition нь хүчинтэй бол түүнийг ашиглах
+        if (lastPosition > Duration.zero &&
+            lastPosition < _video!.value.duration) {
+          await _video?.seekTo(lastPosition);
+        } else if (source.range != null) {
+          await _video?.seekTo(beginRange);
+        }
       } else if (source.range != null) {
-        await seekTo(beginRange);
+        await _video?.seekTo(beginRange);
       }
 
-      if (autoPlay) {
-        await Future.delayed(
-            Duration(milliseconds: 200)); // Жаахан хүлээгээд тоглуулах
-        await play();
-      }
-    } catch (e) {
       _isChangingSource = false;
       notifyListeners();
-      print("Error changing source: $e");
-      rethrow;
+
+      if (autoPlay) await play();
+    } catch (e) {
+      debugPrint('Error changing source to $name: $e');
+      _isChangingSource = false;
+      notifyListeners();
+
+      // Алдаа гарсан тохиолдолд хуучин video-г буцааж ашиглах
+      if (oldVideo != null && oldVideo.value.isInitialized) {
+        _video = oldVideo;
+        _video!.addListener(_videoListener);
+        _activeSourceName = name; // Rollback
+      }
     }
   }
 
@@ -753,6 +785,13 @@ class AnimaxPlayerController extends ChangeNotifier
   //---------//
   //ХАДМАЛ ОРЧУУЛГА//
   //---------//
+
+  /// --- SUBTITLE SIZE ---
+
+  void _saveSubtitleSizeToStorage(int size) {
+    Utils.setString(key: _subtitleSizeKey, value: size.toString());
+  }
+
   void _findSubtitle() {
     final Duration position = _video!.value.position;
     bool foundOne = false;
@@ -799,7 +838,7 @@ class AnimaxPlayerController extends ChangeNotifier
   //OVERLAY//
   //-------//
   void showAndHideOverlay([bool? show]) {
-    if (!isShowingChat &&
+    if (!isShowingEpisode &&
         !isShowingSpeed &&
         !isShowingAspect &&
         !isShowingCaption &&
@@ -809,50 +848,13 @@ class AnimaxPlayerController extends ChangeNotifier
       if (_isShowingOverlay) cancelCloseOverlay();
       notifyListeners();
     } else {
-      isShowingChat = false;
+      isShowingEpisode = false;
       isShowingSpeed = false;
       isShowingAspect = false;
       isShowingCaption = false;
       isShowingQuality = false;
       isShowingSetttings = false;
     }
-  }
-
-  //-------------//
-  //SETTINGS MENU//
-  //-------------//
-  void closeAllSecondarySettingsMenus() {
-    _isShowingMainSettingsMenu = true;
-    isShowingSecondarySettingsMenus.fillRange(
-      0,
-      isShowingSecondarySettingsMenus.length,
-      false,
-    );
-    notifyListeners();
-  }
-
-  void openSecondarySettingsMenu(int index) {
-    _isShowingSettingsMenu = true;
-    _isShowingMainSettingsMenu = false;
-    isShowingSecondarySettingsMenus[index] = true;
-    notifyListeners();
-  }
-
-  void openSecondarySettingsSpeed(int index) {
-    isShowingSecondarySettingsMenus[index] = true;
-    notifyListeners();
-  }
-
-  void openSettingsMenu() {
-    _isShowingSettingsMenu = true;
-    _isShowingMainSettingsMenu = true;
-    notifyListeners();
-  }
-
-  void closeSettingsMenu() {
-    _isShowingSettingsMenu = false;
-    _isShowingMainSettingsMenu = false;
-    notifyListeners();
   }
 
   //----------//
@@ -934,7 +936,7 @@ class AnimaxPlayerController extends ChangeNotifier
   Future<void> _caption() async {
     if (context != null && !isShowingCaption) {
       isShowingCaption = true;
-      isShowingChat = false;
+      isShowingEpisode = false;
       isShowingSpeed = false;
       isShowingAspect = false;
       isShowingQuality = false;
@@ -967,7 +969,7 @@ class AnimaxPlayerController extends ChangeNotifier
   Future<void> _quality() async {
     if (context != null && !isShowingQuality) {
       isShowingQuality = true;
-      isShowingChat = false;
+      isShowingEpisode = false;
       isShowingSpeed = false;
       isShowingAspect = false;
       isShowingCaption = false;
@@ -978,39 +980,6 @@ class AnimaxPlayerController extends ChangeNotifier
   Future<void> _isQuality() async {
     if (isShowingQuality) {
       isShowingQuality = false;
-    }
-  }
-
-  //----------//
-  ///SETTINGS//
-  //----------//
-  Future<void> settings() async {
-    if (!_isGoingToOpenOrSettings) {
-      _isGoingToOpenOrSettings = true;
-      if (!isShowingSetttings) {
-        await _settings();
-      } else {
-        await _isSettings();
-      }
-      _isGoingToOpenOrSettings = false;
-    }
-    notifyListeners();
-  }
-
-  Future<void> _settings() async {
-    if (context != null && !isShowingSetttings) {
-      isShowingSetttings = true;
-      isShowingChat = false;
-      isShowingSpeed = false;
-      isShowingAspect = false;
-      isShowingCaption = false;
-      isShowingQuality = false;
-    }
-  }
-
-  Future<void> _isSettings() async {
-    if (isShowingSetttings) {
-      isShowingSetttings = false;
     }
   }
 
@@ -1033,7 +1002,7 @@ class AnimaxPlayerController extends ChangeNotifier
   Future<void> _speeds() async {
     if (context != null && !isShowingSpeed) {
       isShowingSpeed = true;
-      isShowingChat = false;
+      isShowingEpisode = false;
       isShowingAspect = false;
       isShowingCaption = false;
       isShowingQuality = false;
@@ -1048,24 +1017,24 @@ class AnimaxPlayerController extends ChangeNotifier
   }
 
   //----------//
-  ///CHAT//
+  ///EPISODE//
   //----------//
-  Future<void> chat() async {
+  Future<void> episode() async {
     if (!_isGoingToOpenOrChat) {
       _isGoingToOpenOrChat = true;
-      if (!isShowingChat) {
-        await _chat();
+      if (!isShowingEpisode) {
+        await _episode();
       } else {
-        await _isChat();
+        await _isEpisode();
       }
       _isGoingToOpenOrChat = false;
     }
     notifyListeners();
   }
 
-  Future<void> _chat() async {
-    if (context != null && !isShowingChat) {
-      isShowingChat = true;
+  Future<void> _episode() async {
+    if (context != null && !isShowingEpisode) {
+      isShowingEpisode = true;
       isShowingSpeed = false;
       isShowingAspect = false;
       isShowingCaption = false;
@@ -1074,9 +1043,9 @@ class AnimaxPlayerController extends ChangeNotifier
     }
   }
 
-  Future<void> _isChat() async {
-    if (isShowingChat) {
-      isShowingChat = false;
+  Future<void> _isEpisode() async {
+    if (isShowingEpisode) {
+      isShowingEpisode = false;
     }
   }
 
@@ -1097,7 +1066,7 @@ class AnimaxPlayerController extends ChangeNotifier
     if (context != null && !isShowingAspect) {
       isShowingAspect = true;
       isShowingSpeed = false;
-      isShowingChat = false;
+      isShowingEpisode = false;
       isShowingCaption = false;
       isShowingQuality = false;
       isShowingSetttings = false;
@@ -1105,9 +1074,15 @@ class AnimaxPlayerController extends ChangeNotifier
   }
 
   Future<void> _isAspect() async {
-    if (isShowingChat) {
-      isShowingChat = false;
+    if (isShowingEpisode) {
+      isShowingEpisode = false;
     }
+  }
+
+  void setSubtitleSize(int size) {
+    _currentSubtitleSize = size;
+    _saveSubtitleSizeToStorage(size); // Save the new value to GetStorage
+    notifyListeners();
   }
 
   void setAspect(BoxFit aspect) {
@@ -1116,10 +1091,17 @@ class AnimaxPlayerController extends ChangeNotifier
     notifyListeners();
   }
 
-  void _loadAspectFromStorage() {
-    final storedValue = Utils.getString(key: _aspectKey);
-    if (storedValue != null) {
-      _currentAspect = _boxFitFromString(storedValue);
+  void _loadPlayerSettingsFromStorage() {
+    // Subtitle size
+    final sizeValue = Utils.getString(key: _subtitleSizeKey);
+    if (sizeValue != null) {
+      _currentSubtitleSize = int.tryParse(sizeValue) ?? 23;
+    }
+
+    // Aspect ratio (BoxFit)
+    final aspectValue = Utils.getString(key: _aspectKey);
+    if (aspectValue != null) {
+      _currentAspect = _boxFitFromString(aspectValue);
     }
   }
 

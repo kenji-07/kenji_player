@@ -4,14 +4,14 @@ import 'package:animax_player/animax_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
 
-class DefaultVideoPlayer extends StatefulWidget {
-  DefaultVideoPlayer({Key? key}) : super(key: key);
+class FromNetworkVideoPlayer extends StatefulWidget {
+  FromNetworkVideoPlayer({Key? key}) : super(key: key);
 
   @override
-  State<DefaultVideoPlayer> createState() => DefaultVideoPlayerState();
+  State<FromNetworkVideoPlayer> createState() => FromNetworkVideoPlayerState();
 }
 
-class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
+class FromNetworkVideoPlayerState extends State<FromNetworkVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
   late AnimaxPlayerController _controller;
@@ -61,8 +61,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: true,
-        enableFullscreenScale: false,
+        control: false,
         brightness: true,
         volume: true,
         autoPlay: true,
@@ -71,24 +70,23 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
           context: context,
           controller: _controller,
         ),
-        source: {
-          for (var i = 0; i < Environment.resolutionsUrls.length; i++)
-            Environment.resolutionsUrls[i].quality: VideoSource(
-              intialSubtitle: Environment.intialSubtitle ?? 'English',
-              video: VideoPlayerController.networkUrl(
-                  Uri.parse(Environment.resolutionsUrls[i].qualityUrl),
-                  httpHeaders: customHeaders),
-              httpHeaders: customHeaders,
-              subtitle: {
-                for (var a = 0; a < Environment.subtitleUrls.length; a++)
-                  Environment.subtitleUrls[a].subtitleLang:
-                      AnimaxPlayerSubtitle.network(
-                    Environment.subtitleUrls[a].subtitleUrl,
-                    type: SubtitleType.webvtt,
-                  ),
-              },
-            ),
-        },
+        source: VideoSource.fromNetworkVideoSources(
+          {
+            for (var i = 0; i < Environment.resolutionsUrls.length; i++)
+              Environment.resolutionsUrls[i].quality:
+                  Environment.resolutionsUrls[i].qualityUrl,
+          },
+          httpHeaders: customHeaders,
+          initialSubtitle: 'English',
+          subtitle: {
+            for (var a = 0; a < Environment.subtitleUrls.length; a++)
+              Environment.subtitleUrls[a].subtitleLang:
+                  AnimaxPlayerSubtitle.network(
+                Environment.subtitleUrls[a].subtitleUrl,
+                type: SubtitleType.webvtt,
+              ),
+          },
+        ),
       ),
     );
   }
@@ -125,10 +123,10 @@ class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
             height: MediaQuery.of(context).size.height,
             child: Image.network(
               'https://image.tmdb.org/t/p/original/cm2oUAPiTE1ERoYYOzzgloQw4YZ.jpg',
-              // loadingBuilder: (context, child, loadingProgress) {
-              //   if (loadingProgress == null) return child;
-              //   return const Center(child: CircularProgressIndicator());
-              // },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
               fit: BoxFit.cover,
             ),
           ),

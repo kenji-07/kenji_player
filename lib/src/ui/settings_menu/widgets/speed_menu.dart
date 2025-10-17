@@ -22,7 +22,6 @@ class SpeedMenu extends StatelessWidget {
               onTap: () {
                 final video = query.video(context);
                 video.video!.setPlaybackSpeed(i);
-                video.closeAllSecondarySettingsMenus();
               },
               text: i == 1.0 ? "1x (Normal)" : "${i}x",
               selected: i == speed,

@@ -23,13 +23,11 @@ class QualityMenu extends StatelessWidget {
             SecondaryMenuItem(
               onTap: () async {
                 final video = query.video(context);
-                video.closeAllSecondarySettingsMenus();
-                video.closeSettingsMenu();
                 if (entry.key != activeSourceName) {
-                  await video.changeSource(
-                    source: entry.value,
-                    name: entry.key,
-                  );
+                  if (entry.key != activeSourceName) {
+                    await video.changeSource(
+                        source: entry.value, name: entry.key);
+                  }
                 }
               },
               text: entry.key,

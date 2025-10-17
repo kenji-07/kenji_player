@@ -31,6 +31,8 @@ class VideoProgressBarState extends State<VideoProgressBar> {
           final query = VideoQuery();
           final controller = query.video(context, listen: true);
           final videoStyle = query.videoStyle(context);
+          final metadata = query.videoMetadata(context);
+          final bool control = metadata.control;
           final style = videoStyle.progressBarStyle;
           final bar = style.bar;
 
@@ -50,7 +52,9 @@ class VideoProgressBarState extends State<VideoProgressBar> {
               return ProgressBarGesture(
                 width: width,
                 child: Padding(
-                    padding: EdgeInsets.only(bottom: style.paddingBeetwen),
+                    padding: control
+                        ? EdgeInsets.only(bottom: 0)
+                        : EdgeInsets.only(bottom: style.paddingBeetwen),
                     child: Stack(
                       alignment: AlignmentDirectional.centerStart,
                       children: [
@@ -62,23 +66,27 @@ class VideoProgressBarState extends State<VideoProgressBar> {
                               width,
                         ),
                         ProgressBar(width: progressWidth, color: bar.color),
-                        DotIsDragging(width: width, dotPosition: progressWidth),
-                        Dot(width: width, dotPosition: progressWidth),
-                        CustomOpacityTransition(
-                          visible: controller.isDraggingProgressBar,
-                          child: CustomPaint(
-                            painter: _TextPositionPainter(
-                              position: draggingPosition,
-                              barStyle: style,
-                              width: progressWidth,
-                              totalWidth: width,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
+                        if (!control)
+                          DotIsDragging(
+                              width: width, dotPosition: progressWidth),
+                        if (!control)
+                          Dot(width: width, dotPosition: progressWidth),
+                        if (!control)
+                          CustomOpacityTransition(
+                            visible: controller.isDraggingProgressBar,
+                            child: CustomPaint(
+                              painter: _TextPositionPainter(
+                                position: draggingPosition,
+                                barStyle: style,
+                                width: progressWidth,
+                                totalWidth: width,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                ),
                               ),
                             ),
                           ),
-                        ),
                       ],
                     )),
               );

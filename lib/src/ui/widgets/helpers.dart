@@ -88,13 +88,9 @@ class CustomInkWell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        highlightColor: Colors.white.withValues(alpha: 0.2),
-        onTap: onTap,
-        child: child,
-      ),
+    return GestureDetector(
+      onTap: onTap,
+      child: child,
     );
   }
 }

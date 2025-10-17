@@ -20,16 +20,17 @@ import 'package:animax_player/src/ui/video_core/widgets/forward_and_rewind/layou
 import 'package:animax_player/src/ui/video_core/widgets/aspect_ratio.dart';
 import 'package:animax_player/src/ui/video_core/widgets/orientation.dart';
 import 'package:animax_player/src/ui/video_core/widgets/thumbnail.dart';
-import 'package:animax_player/src/ui/video_core/widgets/buffering.dart';
 import 'package:animax_player/src/ui/video_core/widgets/subtitle.dart';
 import 'package:animax_player/src/ui/video_core/widgets/player.dart';
 import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
 import 'package:animax_player/src/ui/widgets/transitions.dart';
 import 'package:animax_player/src/ui/overlay/overlay.dart';
+import 'package:animax_player/src/ui/overlay/overlay_control_mode.dart';
 import 'package:animax_player/src/ui/settings_menu/widgets/speed_menu.dart';
 import 'package:animax_player/src/ui/settings_menu/widgets/aspect_menu.dart';
 import 'package:animax_player/src/ui/settings_menu/widgets/caption_menu.dart';
 import 'package:animax_player/src/ui/settings_menu/widgets/quality_menu.dart';
+import 'package:animax_player/src/ui/settings_menu/widgets/episode_menu.dart';
 
 class AnimaxPlayerCore extends StatefulWidget {
   const AnimaxPlayerCore({super.key});
@@ -284,84 +285,82 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
       delta = d.primaryDelta! * 2 / panelHeight();
     }
     delta = -delta.clamp(-1.0, 1.0);
-    if (!controller.isShowingSettingsMenu) {
-      if (volumeController && brightnessController) {
-        if (_dragLeft == false) {
-          var volume = _volume;
-          if (volume != null) {
-            volume += delta;
-            volume = volume.clamp(0.0, 1.0);
-            _volume = volume;
-            VolumeController.instance.showSystemUI = false;
-            VolumeController.instance.setVolume(volume);
-            VolumeController.instance.showSystemUI = false;
-            setState(() {
-              _streamController.add(volume!);
-            });
-          }
-        } else if (_dragLeft == true) {
-          var brightness = _brightness;
-          if (brightness != null) {
-            brightness += delta;
-            brightness = brightness.clamp(0.0, 1.0);
-            _brightness = brightness;
-            ScreenBrightness().setApplicationScreenBrightness(brightness);
-            setState(() {
-              _streamController.add(brightness!);
-            });
-          }
+    if (volumeController && brightnessController) {
+      if (_dragLeft == false) {
+        var volume = _volume;
+        if (volume != null) {
+          volume += delta;
+          volume = volume.clamp(0.0, 1.0);
+          _volume = volume;
+          VolumeController.instance.showSystemUI = false;
+          VolumeController.instance.setVolume(volume);
+          VolumeController.instance.showSystemUI = false;
+          setState(() {
+            _streamController.add(volume!);
+          });
         }
-      } else if (volumeController) {
-        if (_dragLeft == false) {
-          var volume = _volume;
-          if (volume != null) {
-            volume += delta;
-            volume = volume.clamp(0.0, 1.0);
-            _volume = volume;
-            VolumeController.instance.showSystemUI = false;
-            VolumeController.instance.setVolume(volume);
-            VolumeController.instance.showSystemUI = false;
-            setState(() {
-              _streamController.add(volume!);
-            });
-          }
-        } else if (_dragLeft == true) {
-          var volume = _volume;
-          if (volume != null) {
-            volume += delta;
-            volume = volume.clamp(0.0, 1.0);
-            _volume = volume;
-            VolumeController.instance.showSystemUI = false;
-            VolumeController.instance.setVolume(volume);
-            VolumeController.instance.showSystemUI = false;
-            setState(() {
-              _streamController.add(volume!);
-            });
-          }
+      } else if (_dragLeft == true) {
+        var brightness = _brightness;
+        if (brightness != null) {
+          brightness += delta;
+          brightness = brightness.clamp(0.0, 1.0);
+          _brightness = brightness;
+          ScreenBrightness().setApplicationScreenBrightness(brightness);
+          setState(() {
+            _streamController.add(brightness!);
+          });
         }
-      } else if (brightnessController) {
-        if (_dragLeft == false) {
-          var brightness = _brightness;
-          if (brightness != null) {
-            brightness += delta;
-            brightness = brightness.clamp(0.0, 1.0);
-            _brightness = brightness;
-            ScreenBrightness().setApplicationScreenBrightness(brightness);
-            setState(() {
-              _streamController.add(brightness!);
-            });
-          }
-        } else if (_dragLeft == true) {
-          var brightness = _brightness;
-          if (brightness != null) {
-            brightness += delta;
-            brightness = brightness.clamp(0.0, 1.0);
-            _brightness = brightness;
-            ScreenBrightness().setApplicationScreenBrightness(brightness);
-            setState(() {
-              _streamController.add(brightness!);
-            });
-          }
+      }
+    } else if (volumeController) {
+      if (_dragLeft == false) {
+        var volume = _volume;
+        if (volume != null) {
+          volume += delta;
+          volume = volume.clamp(0.0, 1.0);
+          _volume = volume;
+          VolumeController.instance.showSystemUI = false;
+          VolumeController.instance.setVolume(volume);
+          VolumeController.instance.showSystemUI = false;
+          setState(() {
+            _streamController.add(volume!);
+          });
+        }
+      } else if (_dragLeft == true) {
+        var volume = _volume;
+        if (volume != null) {
+          volume += delta;
+          volume = volume.clamp(0.0, 1.0);
+          _volume = volume;
+          VolumeController.instance.showSystemUI = false;
+          VolumeController.instance.setVolume(volume);
+          VolumeController.instance.showSystemUI = false;
+          setState(() {
+            _streamController.add(volume!);
+          });
+        }
+      }
+    } else if (brightnessController) {
+      if (_dragLeft == false) {
+        var brightness = _brightness;
+        if (brightness != null) {
+          brightness += delta;
+          brightness = brightness.clamp(0.0, 1.0);
+          _brightness = brightness;
+          ScreenBrightness().setApplicationScreenBrightness(brightness);
+          setState(() {
+            _streamController.add(brightness!);
+          });
+        }
+      } else if (_dragLeft == true) {
+        var brightness = _brightness;
+        if (brightness != null) {
+          brightness += delta;
+          brightness = brightness.clamp(0.0, 1.0);
+          _brightness = brightness;
+          ScreenBrightness().setApplicationScreenBrightness(brightness);
+          setState(() {
+            _streamController.add(brightness!);
+          });
         }
       }
     }
@@ -391,7 +390,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
     controller ??= _query.video(context);
     return !(controller.isDraggingProgressBar ||
         controller.activeAd != null ||
-        controller.isShowingChat);
+        controller.isShowingEpisode);
   }
 
   //-------------------------------//
@@ -460,25 +459,30 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
     final VideoQuery query = VideoQuery();
     final controller = query.video(context, listen: true);
     final bool isLock = controller.isLock;
-
     final bool overlayVisible = controller.isShowingOverlay;
+
     return VideoCoreOrientation(
       builder: (isFullScreenLandscape) {
-        return !controller.shouldShowContentVideo
-            ? controller.adDisplayContainer
-            : isLock
-                ? isFullScreenLandscape
-                    ? _playerLock(isFullScreenLandscape, overlayVisible)
-                    : VideoCoreAspectRadio(
-                        child:
-                            _playerLock(isFullScreenLandscape, overlayVisible),
-                      )
-                : isFullScreenLandscape
-                    ? _globalGesture(isFullScreenLandscape, overlayVisible)
-                    : VideoCoreAspectRadio(
-                        child: _globalGesture(
-                            isFullScreenLandscape, overlayVisible),
-                      );
+        if (controller.isAdLoaded) {
+          if (!controller.shouldShowContentVideo) {
+            return KeyedSubtree(
+              key: const ValueKey('ad_container'),
+              child: controller.adDisplayContainer,
+            );
+          }
+        }
+
+        return isLock
+            ? isFullScreenLandscape
+                ? _playerLock(isFullScreenLandscape, overlayVisible)
+                : VideoCoreAspectRadio(
+                    child: _playerLock(isFullScreenLandscape, overlayVisible),
+                  )
+            : isFullScreenLandscape
+                ? _global(isFullScreenLandscape, overlayVisible)
+                : VideoCoreAspectRadio(
+                    child: _global(isFullScreenLandscape, overlayVisible),
+                  );
       },
     );
   }
@@ -520,6 +524,28 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
         controller.video!.setPlaybackSpeed(2.0);
       });
     }
+  }
+
+  Widget _global(bool canScale, overlayVisible) {
+    final metadata = _query.videoMetadata(context);
+    final controller = _query.video(context);
+    final bool scale = metadata.control;
+
+    return Stack(
+      children: [
+        _globalGesture(canScale, overlayVisible),
+        if (!scale)
+          rightPositioned(controller.isShowingSpeed, const SpeedMenu()),
+        if (!scale)
+          rightPositioned(controller.isShowingAspect, const AspectMenu()),
+        if (!scale)
+          rightPositioned(controller.isShowingCaption, const CaptionMenu()),
+        if (!scale)
+          rightPositioned(controller.isShowingQuality, const QualityMenu()),
+        if (!scale)
+          rightPositioned(controller.isShowingEpisode, const EpisodeMenu()),
+      ],
+    );
   }
 
   //--------//
@@ -604,18 +630,19 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
           ),
         ),
 
-        GestureDetector(
-          onTap: () => _query.video(context).showAndHideOverlay(),
-          behavior: HitTestBehavior.opaque,
-          child: CustomOpacityTransition(
-            visible: overlayVisible,
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.black.withValues(alpha: 0.6),
+        if (!scale)
+          GestureDetector(
+            onTap: () => _query.video(context).showAndHideOverlay(),
+            behavior: HitTestBehavior.opaque,
+            child: CustomOpacityTransition(
+              visible: overlayVisible,
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.black.withValues(alpha: 0.6),
+              ),
             ),
           ),
-        ),
 
         VideoCoreForwardAndRewindLayout(
           rewind: GestureDetector(onDoubleTap: _rewind),
@@ -626,62 +653,95 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
           builder: (_) {
             final controller = _query.video(context, listen: true);
 
-            return Stack(
-              children: [
-                const VideoCoreBuffering(),
-                CustomOpacityTransition(
-                  visible: (controller.position >= controller.duration &&
-                          !controller.isShowingOverlay) ||
-                      showAMomentRewindIcons[0] ||
-                      showAMomentRewindIcons[1],
-                  child: Center(
-                    child: CenterPlayAndPause(
-                      type: CenterPlayAndPauseType.center,
-                      showRewind: showAMomentRewindIcons[0],
-                      showForward: showAMomentRewindIcons[1],
-                    ),
-                  ),
+            return CustomOpacityTransition(
+              visible: (controller.position >= controller.duration &&
+                      !controller.isShowingOverlay) ||
+                  showAMomentRewindIcons[0] ||
+                  showAMomentRewindIcons[1] ||
+                  controller.isChangingSource ||
+                  controller.isBuffering,
+              child: Center(
+                child: CenterPlayAndPause(
+                  type: CenterPlayAndPauseType.center,
+                  showRewind: showAMomentRewindIcons[0],
+                  showForward: showAMomentRewindIcons[1],
                 ),
-              ],
+              ),
             );
           },
         ),
-
-        VideoCoreOverlay(
-          showRewind: showAMomentRewindIcons[0],
-          showForward: showAMomentRewindIcons[1],
-          showSkipStartButton: showSkipStartButton,
-          showSkipEndButton: showSkipEndButton,
-          startButton: () {
-            controller.seekTo(metadata.opEnd);
-            setState(() {
-              showSkipStartButton = false;
-            });
-          },
-          endButton: () {
-            controller.seekTo(metadata.edEnd);
-            // Товчлуур дарсны дараа шууд нуух
-            setState(() {
-              showSkipEndButton = false;
-            });
-          },
-          child: isFullScreen
-              ? SizedBox(
-                  height: 14,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        buildTimeNow(),
-                        const Spacer(),
-                        buildPower(),
-                      ],
+        if (scale)
+          VideoCoreOverlayControlMode(
+            showRewind: showAMomentRewindIcons[0],
+            showForward: showAMomentRewindIcons[1],
+            showSkipStartButton: showSkipStartButton,
+            showSkipEndButton: showSkipEndButton,
+            startButton: () {
+              controller.seekTo(metadata.opEnd);
+              setState(() {
+                showSkipStartButton = false;
+              });
+            },
+            endButton: () {
+              controller.seekTo(metadata.edEnd);
+              // Товчлуур дарсны дараа шууд нуух
+              setState(() {
+                showSkipEndButton = false;
+              });
+            },
+            child: isFullScreen
+                ? SizedBox(
+                    height: 14,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          buildTimeNow(),
+                          const Spacer(),
+                          buildPower(),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        if (!scale)
+          VideoCoreOverlay(
+            showRewind: showAMomentRewindIcons[0],
+            showForward: showAMomentRewindIcons[1],
+            showSkipStartButton: showSkipStartButton,
+            showSkipEndButton: showSkipEndButton,
+            startButton: () {
+              controller.seekTo(metadata.opEnd);
+              setState(() {
+                showSkipStartButton = false;
+              });
+            },
+            endButton: () {
+              controller.seekTo(metadata.edEnd);
+              // Товчлуур дарсны дараа шууд нуух
+              setState(() {
+                showSkipEndButton = false;
+              });
+            },
+            child: isFullScreen
+                ? SizedBox(
+                    height: 14,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          buildTimeNow(),
+                          const Spacer(),
+                          buildPower(),
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
 
         if (!scale)
           if (metadata.lock)
@@ -708,18 +768,6 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
                 ),
               ),
             ),
-
-        if (!scale)
-          menuPositioned(controller.isShowingSpeed, const SpeedMenu()),
-
-        if (!scale)
-          menuPositioned(controller.isShowingAspect, const AspectMenu()),
-
-        if (!scale)
-          menuPositioned(controller.isShowingCaption, const CaptionMenu()),
-
-        if (!scale)
-          menuPositioned(controller.isShowingQuality, const QualityMenu()),
 
         if (!scale)
           Align(
@@ -758,10 +806,10 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
       offstage: !longPress,
       child: Container(
         margin: const EdgeInsets.only(top: 20),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(30),
         ),
         child: const Text(
           "Playing in 2x speed",
@@ -774,26 +822,23 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
     );
   }
 
-  Widget menuPositioned(bool visible, Widget child) {
+  Widget rightPositioned(bool visible, Widget child) {
     return Positioned(
       right: 0,
       top: 0,
       bottom: 0,
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Builder(
-          builder: (_) {
-            return CustomSwipeTransition(
-              visible: visible,
-              axis: Axis.horizontal,
-              axisAlignment: 1.0,
-              child: Container(
-                color: const Color.fromRGBO(16, 17, 18, 1.0),
-                child: child,
-              ),
-            );
-          },
-        ),
+      child: Builder(
+        builder: (_) {
+          return CustomSwipeTransition(
+            visible: visible,
+            axis: Axis.horizontal,
+            axisAlignment: 1.0,
+            child: Container(
+              color: const Color.fromRGBO(16, 17, 18, 1.0),
+              child: child,
+            ),
+          );
+        },
       ),
     );
   }

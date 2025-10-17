@@ -8,43 +8,37 @@ class VideoCoreActiveSubtitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query = VideoQuery();
-    final style = query.videoStyle(context).subtitleStyle;
-    final fullStyle = query.videoStyle(context).fullscreenSubtitleStyle;
     final subtitle = query.video(context, listen: true).activeCaptionData;
 
     final controller = query.video(context, listen: true);
     final bool isFullScreen = controller.isFullScreen;
 
-    return isFullScreen
-        ? Align(
-            alignment: fullStyle.alignment,
-            child: Padding(
-              padding: fullStyle.padding,
-              child: ClosedCaption(
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  // backgroundColor: Colors.black,
-                  height: 1.2,
-                ),
-                text: subtitle != null ? subtitle.text : "",
-              ),
-            ),
-          )
-        : Align(
-            alignment: style.alignment,
-            child: Padding(
-              padding: style.padding,
-              child: ClosedCaption(
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  // backgroundColor: Colors.black,
-                  height: 1.2,
-                ),
-                text: subtitle != null ? subtitle.text : "",
-              ),
-            ),
-          );
+    final alignment = isFullScreen
+        ? query.videoStyle(context).fullscreenSubtitleStyle.alignment
+        : query.videoStyle(context).subtitleStyle.alignment;
+
+    final padding = isFullScreen
+        ? query.videoStyle(context).fullscreenSubtitleStyle.padding
+        : query.videoStyle(context).subtitleStyle.padding;
+
+    final fontSize = isFullScreen
+        ? controller.currentSubtitleSize.toDouble()
+        : controller.currentSubtitleSize.toDouble() * 0.7;
+
+    return Align(
+      alignment: alignment,
+      child: Padding(
+        padding: padding,
+        child: ClosedCaption(
+          textStyle: TextStyle(
+            color: Colors.white,
+            fontSize: fontSize,
+            // backgroundColor: Colors.black,
+            height: 1.2,
+          ),
+          text: subtitle != null ? subtitle.text : "",
+        ),
+      ),
+    );
   }
 }

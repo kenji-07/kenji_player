@@ -12,12 +12,14 @@ class VideoSource {
     this.subtitle,
     this.intialSubtitle = "",
     this.range,
+    this.httpHeaders,
   });
   final List<AnimaxPlayerAd>? ads;
   final Tween<Duration>? range;
   final VideoPlayerController video;
   final Map<String, AnimaxPlayerSubtitle>? subtitle;
   final String intialSubtitle;
+  final Map<String, String>? httpHeaders;
 
   static Map<String, VideoSource> fromNetworkVideoSources(
     Map<String, String> sources, {
@@ -25,15 +27,20 @@ class VideoSource {
     Map<String, AnimaxPlayerSubtitle>? subtitle,
     List<AnimaxPlayerAd>? ads,
     Tween<Duration>? range,
+    Map<String, String>? httpHeaders,
   }) {
     Map<String, VideoSource> videoSource = {};
     for (String key in sources.keys) {
       videoSource[key] = VideoSource(
-        video: VideoPlayerController.networkUrl(Uri.parse(sources[key]!)),
+        video: VideoPlayerController.networkUrl(
+          Uri.parse(sources[key]!),
+          httpHeaders: httpHeaders ?? {},
+        ),
         intialSubtitle: initialSubtitle,
         subtitle: subtitle,
         range: range,
         ads: ads,
+        httpHeaders: httpHeaders,
       );
     }
     return videoSource;
@@ -47,8 +54,8 @@ class VideoSource {
     Tween<Duration>? range,
     String Function(String quality)? formatter,
     bool descending = true,
+    Map<String, String>? httpHeaders,
   }) async {
-    //REGULAR EXPRESIONS//
     final RegExp netRegxUrl = RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
     final RegExp netRegx2 = RegExp(r'(.*)\r?\/');
     final RegExp regExpPlaylist = RegExp(
@@ -62,12 +69,13 @@ class VideoSource {
       multiLine: true,
     );
 
-    //GET m3u8 file
     late String content = "";
-    final http.Response response = await http.get(Uri.parse(m3u8));
+    final http.Response response = await http.get(
+      Uri.parse(m3u8),
+      headers: httpHeaders ?? {},
+    );
     if (response.statusCode == 200) content = utf8.decode(response.bodyBytes);
 
-    //Find matches
     List<RegExpMatch> playlistMatches =
         regExpPlaylist.allMatches(content).toList();
     List<RegExpMatch> audioMatches = regExpAudio.allMatches(content).toList();
@@ -87,7 +95,6 @@ class VideoSource {
         playlistUrl = "$dataURL$sourceURL";
       }
 
-      //Find audio url
       for (final RegExpMatch audioMatch in audioMatches) {
         final String audio = (audioMatch.group(1)).toString();
         final bool isNetwork = netRegxUrl.hasMatch(audio);
@@ -100,8 +107,6 @@ class VideoSource {
         audioUrls.add(audioUrl);
       }
 
-      // M3U8 чанарын бүх variant-ыг шууд network URL-аар хадгалах
-      // Локал файл үүсгэхгүй байх нь iOS дээр алдаа гаргахгүй
       sourceUrls[quality] = playlistUrl;
     }
 
@@ -109,17 +114,20 @@ class VideoSource {
 
     void addAutoSource() {
       videoSource["Auto"] = VideoSource(
-        video: VideoPlayerController.networkUrl(Uri.parse(m3u8)),
+        video: VideoPlayerController.networkUrl(
+          Uri.parse(m3u8),
+          httpHeaders: httpHeaders ?? {},
+        ),
         intialSubtitle: initialSubtitle,
         subtitle: subtitle,
         range: range,
         ads: ads,
+        httpHeaders: httpHeaders,
       );
     }
 
     if (descending) addAutoSource();
 
-    // Бүх чанарыг эрэмбэлэх
     final sortedEntries = sourceUrls.entries.toList();
     if (descending) {
       sortedEntries.sort((a, b) {
@@ -131,13 +139,16 @@ class VideoSource {
 
     for (final entry in sortedEntries) {
       final String key = formatter?.call(entry.key) ?? entry.key;
-      // Network URL-ыг шууд ашиглах - локал файл үүсгэхгүй
       videoSource[key] = VideoSource(
-        video: VideoPlayerController.networkUrl(Uri.parse(entry.value)),
+        video: VideoPlayerController.networkUrl(
+          Uri.parse(entry.value),
+          httpHeaders: httpHeaders ?? {},
+        ),
         intialSubtitle: initialSubtitle,
         subtitle: subtitle,
         range: range,
         ads: ads,
+        httpHeaders: httpHeaders,
       );
     }
 

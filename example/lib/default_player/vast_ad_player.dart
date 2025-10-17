@@ -4,14 +4,14 @@ import 'package:animax_player/animax_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
 
-class DefaultVideoPlayer extends StatefulWidget {
-  DefaultVideoPlayer({Key? key}) : super(key: key);
+class VastADVideoPlayer extends StatefulWidget {
+  VastADVideoPlayer({Key? key}) : super(key: key);
 
   @override
-  State<DefaultVideoPlayer> createState() => DefaultVideoPlayerState();
+  State<VastADVideoPlayer> createState() => VastADVideoPlayerState();
 }
 
-class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
+class VastADVideoPlayerState extends State<VastADVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
   late AnimaxPlayerController _controller;
@@ -61,12 +61,13 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: true,
-        enableFullscreenScale: false,
+        control: false,
         brightness: true,
         volume: true,
         autoPlay: true,
         caption: true,
+        imaAdTagUrl:
+            'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpremidpost&ciu_szs=300x250&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&cmsid=496&vid=short_onecue&correlator=',
         style: CustomAnimaxPlayerStyle(
           context: context,
           controller: _controller,
@@ -125,10 +126,10 @@ class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
             height: MediaQuery.of(context).size.height,
             child: Image.network(
               'https://image.tmdb.org/t/p/original/cm2oUAPiTE1ERoYYOzzgloQw4YZ.jpg',
-              // loadingBuilder: (context, child, loadingProgress) {
-              //   if (loadingProgress == null) return child;
-              //   return const Center(child: CircularProgressIndicator());
-              // },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
               fit: BoxFit.cover,
             ),
           ),

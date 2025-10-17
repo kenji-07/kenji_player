@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/settings_menu/settings_menu.dart';
 import 'package:animax_player/src/ui/overlay/widgets/background.dart';
 import 'package:animax_player/src/ui/overlay/widgets/bottom.dart';
 import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
@@ -201,7 +200,9 @@ class VideoCoreOverlay extends StatelessWidget {
           AnimatedBuilder(
             animation: controller,
             builder: (_, __) => CustomOpacityTransition(
-              visible: overlayVisible,
+              visible: overlayVisible ||
+                  controller.isChangingSource ||
+                  controller.isBuffering,
               child: Center(
                 child: CenterPlayAndPause(
                   type: CenterPlayAndPauseType.center,
@@ -211,11 +212,6 @@ class VideoCoreOverlay extends StatelessWidget {
               ),
             ),
           ),
-          if (!scale)
-            CustomOpacityTransition(
-              visible: controller.isShowingSettingsMenu,
-              child: const SettingsMenu(),
-            ),
         ],
       ),
     );

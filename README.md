@@ -8,14 +8,23 @@ The [video_player](https://pub.dev/packages/video_player) plugin gives low level
 - Double tap to seek video.
 - On video tap play/pause, mute/unmute, or perform any action on video.
 - Auto hide controls.
+- Subtitle
+- Subtitle controll
 - Custom animations.
 - Custom controls for normal and fullscreen.
 - Auto-play list of videos.
 - Change playback speed.
+- Change quality select.
 - Custom ads
+- Google IMA ads show on player
 - Volume & Brightness control
 - OP start, OP end & END start, END end - seek
 - Screen lock mode
 - Thumbnail
-- HLS support
+- BoxFit for video
+- Wakelock
+- Custom widget
+- HLS (tracks, segmented subtitles)
+- Headers
+- Etc...
 

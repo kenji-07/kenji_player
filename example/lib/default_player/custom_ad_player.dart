@@ -4,14 +4,14 @@ import 'package:animax_player/animax_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
 
-class DefaultVideoPlayer extends StatefulWidget {
-  DefaultVideoPlayer({Key? key}) : super(key: key);
+class CustomADPlayer extends StatefulWidget {
+  CustomADPlayer({Key? key}) : super(key: key);
 
   @override
-  State<DefaultVideoPlayer> createState() => DefaultVideoPlayerState();
+  State<CustomADPlayer> createState() => CustomADPlayerState();
 }
 
-class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
+class CustomADPlayerState extends State<CustomADPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
   late AnimaxPlayerController _controller;
@@ -61,8 +61,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: true,
-        enableFullscreenScale: false,
+        control: false,
         brightness: true,
         volume: true,
         autoPlay: true,
@@ -87,10 +86,72 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
                     type: SubtitleType.webvtt,
                   ),
               },
+              ads: [
+                AnimaxPlayerAd(
+                    durationToStart: const Duration(seconds: 0),
+                    durationToSkip: const Duration(seconds: 10),
+                    deepLink: 'deepLink',
+                    child: playerAd(1)),
+                AnimaxPlayerAd(
+                    durationToStart: const Duration(seconds: 20),
+                    durationToSkip: const Duration(seconds: 30),
+                    deepLink: 'deepLink',
+                    child: playerAd(2))
+                // Etc.
+              ],
             ),
         },
       ),
     );
+  }
+
+  Widget playerAd(int type) {
+    if (type == 1) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Image.network(
+          'https://image.tmdb.org/t/p/original/cm2oUAPiTE1ERoYYOzzgloQw4YZ.jpg',
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return const Center(child: CircularProgressIndicator());
+          },
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (type == 2) {
+      return Container(
+        padding: const EdgeInsets.all(15),
+        color: Colors.amber,
+        child: Center(
+            child: Text(
+          'Hiii',
+          style: const TextStyle(color: Colors.white, fontSize: 22),
+        )),
+      );
+    } else if (type == 3) {
+      return Container(
+        color: Colors.amber,
+        child: Center(
+            child: Text(
+          'else Hii',
+          style: const TextStyle(color: Colors.white, fontSize: 22),
+        )),
+      );
+      // return ColoredBox(
+      //     color: Colors.amber,
+      //     child:
+      //         VastAdPlayer(url: vastAd.vastAdModel.result![index].url ?? ''));
+    } else {
+      return Container(
+        color: Colors.amber,
+        child: Center(
+            child: Text(
+          'else Hii',
+          style: const TextStyle(color: Colors.white, fontSize: 22),
+        )),
+      );
+    }
   }
 }
 
@@ -125,10 +186,10 @@ class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
             height: MediaQuery.of(context).size.height,
             child: Image.network(
               'https://image.tmdb.org/t/p/original/cm2oUAPiTE1ERoYYOzzgloQw4YZ.jpg',
-              // loadingBuilder: (context, child, loadingProgress) {
-              //   if (loadingProgress == null) return child;
-              //   return const Center(child: CircularProgressIndicator());
-              // },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
               fit: BoxFit.cover,
             ),
           ),

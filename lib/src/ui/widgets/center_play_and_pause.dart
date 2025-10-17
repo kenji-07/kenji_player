@@ -24,17 +24,30 @@ class CenterPlayAndPause extends StatelessWidget {
     final controller = query.video(context, listen: true);
     final style = query.videoMetadata(context).style.centerPlayAndPauseStyle;
     final bool isPlaying = !controller.isPlaying;
+    final loading = query.videoStyle(context);
+
+    if (controller.isChangingSource || controller.isBuffering) {
+      return Container(
+        width: loading.centerPlayAndPauseStyle.circleRadius,
+        height: loading.centerPlayAndPauseStyle.circleRadius,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: loading.centerPlayAndPauseStyle.background,
+        ),
+        child: SplashCircularIcon(
+          onTap: () {},
+          padding: padding,
+          child: loading.loading,
+        ),
+      );
+    }
 
     Widget childWidget;
-
-    // 1️⃣ Хэрэв rewind эсвэл forward идэвхтэй байвал тэргүүнд шалгана
     if (showRewind) {
       childWidget = style.rewindWidget;
     } else if (showForward) {
       childWidget = style.forwardWidget;
-    }
-    // 2️⃣ Эс бөгөөс type-аас хамаарна
-    else if (type == CenterPlayAndPauseType.bottom) {
+    } else if (type == CenterPlayAndPauseType.bottom) {
       childWidget = isPlaying ? style.play : style.pause;
     } else {
       childWidget = controller.position >= controller.duration

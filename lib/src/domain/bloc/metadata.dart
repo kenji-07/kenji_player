@@ -11,18 +11,14 @@ class AnimaxPlayerMetadata {
     required this.enableFullscreenScale,
     required this.volume,
     required this.brightness,
-    required this.enableShowReplayIconAtVideoEnd,
     required this.lock,
     required this.caption,
-    required this.contentType,
     required this.aspect,
     required this.opStart,
     required this.opEnd,
     required this.edStart,
     required this.edEnd,
   });
-
-  final String contentType;
 
   /// OP Start, OP End & END Start, END End
   final Duration opStart;
@@ -65,8 +61,6 @@ class AnimaxPlayerMetadata {
   final bool volume;
 
   final bool brightness;
-
-  final bool enableShowReplayIconAtVideoEnd;
 
   final bool lock;
 

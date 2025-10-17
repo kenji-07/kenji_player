@@ -4,14 +4,12 @@ import 'package:animax_player/src/domain/entities/styles/center_play_and_pause.d
 
 import 'package:animax_player/src/domain/entities/styles/lock.dart';
 import 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
-import 'package:animax_player/src/domain/entities/styles/settings_menu.dart';
 import 'package:animax_player/src/domain/entities/styles/subtitle.dart';
 import 'package:animax_player/src/domain/entities/styles/fullscreen_subtitle.dart';
 
 export 'package:animax_player/src/domain/entities/styles/bar.dart';
 export 'package:animax_player/src/domain/entities/styles/center_play_and_pause.dart';
 export 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
-export 'package:animax_player/src/domain/entities/styles/settings_menu.dart';
 export 'package:animax_player/src/domain/entities/styles/subtitle.dart';
 export 'package:animax_player/src/domain/entities/styles/lock.dart';
 
@@ -22,12 +20,12 @@ class AnimaxPlayerStyle {
     ProgressBarStyle? progressBarStyle,
     LockStyle? lock,
     CenterPlayAndPauseWidgetStyle? centerPlayAndPauseStyle,
-    SettingsMenuStyle? settingsStyle,
     SubtitleStyle? subtitleStyle,
     FullscreenSubtitleStyle? fullscreenSubtitleStyle,
     Widget? loading,
     Widget? buffering,
     TextStyle? textStyle,
+    this.episode,
     this.thumbnail,
     this.header,
     this.transitions = const Duration(milliseconds: 400),
@@ -50,7 +48,6 @@ class AnimaxPlayerStyle {
         subtitleStyle = subtitleStyle ?? SubtitleStyle(),
         fullscreenSubtitleStyle =
             fullscreenSubtitleStyle ?? FullscreenSubtitleStyle(),
-        settingsStyle = settingsStyle ?? SettingsMenuStyle(),
         progressBarStyle = progressBarStyle ?? ProgressBarStyle(),
         lock = lock ?? LockStyle(),
         centerPlayAndPauseStyle =
@@ -64,7 +61,7 @@ class AnimaxPlayerStyle {
 
   /// These are the styles of the settings sales, here you will change the icons and
   /// the language of the texts
-  final SettingsMenuStyle settingsStyle;
+  final Widget? episode;
 
   /// It is the style that will have all the icons and elements of the progress bar
   final ProgressBarStyle progressBarStyle;
@@ -124,7 +121,7 @@ class AnimaxPlayerStyle {
   final Alignment skipAdAlignment;
 
   AnimaxPlayerStyle copyWith({
-    SettingsMenuStyle? settingsStyle,
+    Widget? episode,
     ProgressBarStyle? progressBarStyle,
     LockStyle? lock,
     SubtitleStyle? subtitleStyle,
@@ -140,7 +137,7 @@ class AnimaxPlayerStyle {
     Alignment? skipAdAlignment,
   }) {
     return AnimaxPlayerStyle(
-      settingsStyle: settingsStyle ?? this.settingsStyle,
+      episode: episode ?? this.episode,
       progressBarStyle: progressBarStyle ?? this.progressBarStyle,
       lock: lock ?? this.lock,
       subtitleStyle: subtitleStyle ?? this.subtitleStyle,
@@ -164,7 +161,7 @@ class AnimaxPlayerStyle {
     if (identical(this, other)) return true;
 
     return other is AnimaxPlayerStyle &&
-        other.settingsStyle == settingsStyle &&
+        other.episode == episode &&
         other.progressBarStyle == progressBarStyle &&
         other.lock == lock &&
         other.subtitleStyle == subtitleStyle &&
@@ -182,7 +179,7 @@ class AnimaxPlayerStyle {
 
   @override
   int get hashCode {
-    return settingsStyle.hashCode ^
+    return episode.hashCode ^
         progressBarStyle.hashCode ^
         lock.hashCode ^
         subtitleStyle.hashCode ^

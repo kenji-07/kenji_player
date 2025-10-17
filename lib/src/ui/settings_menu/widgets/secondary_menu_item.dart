@@ -18,7 +18,7 @@ class SecondaryMenuItem extends StatelessWidget {
     return CustomInkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 23),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: CustomText(text: text, selected: selected),
       ),
     );

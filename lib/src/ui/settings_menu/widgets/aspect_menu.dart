@@ -31,7 +31,6 @@ class AspectMenu extends StatelessWidget {
                 video.setAspect(
                   fit,
                 ); // Pass the selected BoxFit to the video controller
-                video.closeAllSecondarySettingsMenus();
               },
               text: fit
                   .toString()

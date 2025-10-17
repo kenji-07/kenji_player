@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:animax_player/animax_player.dart';
 import 'package:get/get.dart';
-import '../utils/environment.dart';
 
-class DefaultVideoPlayer extends StatefulWidget {
-  DefaultVideoPlayer({Key? key}) : super(key: key);
+class HlsVideoPlayer extends StatefulWidget {
+  HlsVideoPlayer({Key? key}) : super(key: key);
 
   @override
-  State<DefaultVideoPlayer> createState() => DefaultVideoPlayerState();
+  State<HlsVideoPlayer> createState() => HlsVideoPlayerState();
 }
 
-class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
+class HlsVideoPlayerState extends State<HlsVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
   late AnimaxPlayerController _controller;
-  final Map<String, String> customHeaders = {};
+  final Map<String, String> customHeaders = {
+    'Authorization': 'Bearer your_token_here',
+    'User-Agent': 'MyCustomApp/1.0',
+    'Custom-Header': 'custom_value',
+  };
 
   @override
   void initState() {
@@ -44,52 +47,44 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
           return;
         }
       },
-      child: Scaffold(backgroundColor: Colors.blueGrey, body: _buildPlayer()),
+      child:
+          Scaffold(backgroundColor: Colors.blueGrey, body: _buildM3U8Player()),
     );
   }
 
-  Widget _buildPlayer() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: AnimaxPlayer(
-        seekTo: const Duration(milliseconds: 0),
-        opStart: const Duration(seconds: 1),
-        opEnd: const Duration(seconds: 10),
-        edStart: const Duration(seconds: 15),
-        edEnd: const Duration(seconds: 20),
-        key: _playerKey,
-        controller: _controller,
-        lock: true,
-        control: true,
-        enableFullscreenScale: false,
-        brightness: true,
-        volume: true,
-        autoPlay: true,
-        caption: true,
-        style: CustomAnimaxPlayerStyle(
-          context: context,
-          controller: _controller,
-        ),
-        source: {
-          for (var i = 0; i < Environment.resolutionsUrls.length; i++)
-            Environment.resolutionsUrls[i].quality: VideoSource(
-              intialSubtitle: Environment.intialSubtitle ?? 'English',
-              video: VideoPlayerController.networkUrl(
-                  Uri.parse(Environment.resolutionsUrls[i].qualityUrl),
-                  httpHeaders: customHeaders),
-              httpHeaders: customHeaders,
-              subtitle: {
-                for (var a = 0; a < Environment.subtitleUrls.length; a++)
-                  Environment.subtitleUrls[a].subtitleLang:
-                      AnimaxPlayerSubtitle.network(
-                    Environment.subtitleUrls[a].subtitleUrl,
-                    type: SubtitleType.webvtt,
-                  ),
-              },
-            ),
-        },
+  Widget _buildM3U8Player() {
+    return FutureBuilder<Map<String, VideoSource>>(
+      future: VideoSource.fromM3u8PlaylistUrl(
+        'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+        httpHeaders: customHeaders, // M3U8-д headers нэмэх
+        formatter: (quality) =>
+            quality == 'Auto' ? 'Automatic' : '${quality.split('x').last}p',
       ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return AnimaxPlayer(
+            source: snapshot.data!,
+            seekTo: const Duration(
+              milliseconds: 0,
+            ),
+            opStart: const Duration(milliseconds: 0),
+            opEnd: const Duration(milliseconds: 0),
+            edStart: const Duration(milliseconds: 0),
+            edEnd: const Duration(milliseconds: 0),
+            key: _playerKey, // 1
+            controller: _controller, // 1
+            lock: true, // 1 - Ажиллаж байна. 0 - Ажиллахгүй байна.
+            control: false, // control block
+            brightness: true, // 1
+            volume: true, // 1
+            autoPlay: true, // 1
+            caption: true,
+            style: CustomAnimaxPlayerStyle(
+                context: context, controller: _controller),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 }
@@ -125,10 +120,10 @@ class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
             height: MediaQuery.of(context).size.height,
             child: Image.network(
               'https://image.tmdb.org/t/p/original/cm2oUAPiTE1ERoYYOzzgloQw4YZ.jpg',
-              // loadingBuilder: (context, child, loadingProgress) {
-              //   if (loadingProgress == null) return child;
-              //   return const Center(child: CircularProgressIndicator());
-              // },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
               fit: BoxFit.cover,
             ),
           ),

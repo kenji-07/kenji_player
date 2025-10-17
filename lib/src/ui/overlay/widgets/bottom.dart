@@ -60,25 +60,27 @@ class OverlayBottomState extends State<OverlayBottom> {
                   Row(
                     children: [
                       /// Menu
-                      if (!scale)
-                        SplashCircularIcon(
-                          padding: halfPadding,
-                          onTap: () => controller.openSettingsMenu(),
-                          child: const Icon(
-                            Iconsax.element_equal_copy,
-                            color: Colors.white,
-                            size: 20,
+                      if (style.episode != null && !controller.isShowingEpisode)
+                        if (!scale)
+                          SplashCircularIcon(
+                            padding: halfPadding,
+                            onTap: () => controller.episode(),
+                            child: const Icon(
+                              Iconsax.element_equal_copy,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
-                        ),
 
                       /// Full Screen
-                      SplashCircularIcon(
-                        padding: halfPadding,
-                        onTap: () => controller.openOrCloseFullscreen(),
-                        child: isFullscreen
-                            ? barStyle.fullScreenExit
-                            : barStyle.fullScreen,
-                      ),
+                      if (metadata.enableFullscreenScale)
+                        SplashCircularIcon(
+                          padding: halfPadding,
+                          onTap: () => controller.openOrCloseFullscreen(),
+                          child: isFullscreen
+                              ? barStyle.fullScreenExit
+                              : barStyle.fullScreen,
+                        ),
                     ],
                   ),
                 ],
