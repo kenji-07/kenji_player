@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter/material.dart';
 
-/// Default builder generate default FVolToast UI
 Widget defaultFVolumeToast(double value, Stream<double> emitter) {
   return _FSliderToast(value, 0, emitter);
 }

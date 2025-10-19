@@ -29,7 +29,7 @@ class CaptionMenu extends StatelessWidget {
 
     final activeSourceName = video.activeSourceName;
     final activeCaption = video.activeCaption;
-    String none = "Орчуулгагүй";
+    String none = "None";
 
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 10, top: 20, bottom: 20),

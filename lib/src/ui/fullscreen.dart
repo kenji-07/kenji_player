@@ -51,7 +51,7 @@ class FullScreenPageState extends State<FullScreenPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: PopScope(
-        canPop: false, // "back" товчийг дарахыг хориглох
+        canPop: false,
         onPopInvokedWithResult: (bool didPop, dynamic result) async {
           if (!didPop) {
             _systemResetTimer.cancel();

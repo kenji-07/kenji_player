@@ -274,11 +274,9 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
     _video?.dispose();
     _contentProgressTimer?.cancel();
     _adsManager?.destroy();
-    // adsLoader initialized эсэхийг шалгах
     try {
       adsLoader?.contentComplete();
     } catch (e) {
-      // adsLoader initialized биш бол алдааг үл тоомсорлох
       debugPrint('AdsLoader not initialized: $e');
     }
     // Wakelock.disable();
@@ -359,8 +357,6 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
         _resumeContent();
         return;
       }
-
-      // Ad ачаалж эхлэх үед video-г түр зогсоох
       _video?.pause();
 
       adsLoader = AdsLoader(
@@ -471,7 +467,6 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
     bool inheritPosition = true,
     bool autoPlay = true,
   }) async {
-    // Хэрэв өмнөх source-тэй ижил бол skip хийх
     if (_activeSourceName == name && _video != null) {
       debugPrint('Same source selected, skipping change');
       return;
@@ -479,10 +474,8 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
 
     final double speed = _video?.value.playbackSpeed ?? 1.0;
     final double volume = _video?.value.volume ?? 1.0;
-    // ЗАСВАР: Actual video position-г авах (beginRange хасахгүй)
     final Duration lastPosition = _video?.value.position ?? Duration.zero;
 
-    // Хадмал орчуулгыг өөрчлөх
     if (source.subtitle != null) {
       final subtitle = source.subtitle![source.intialSubtitle];
       if (subtitle != null) {
@@ -515,12 +508,9 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
     }
 
     try {
-      // Шинэ VideoPlayerController үүсгэх (өмнөхийг дахин ашиглахгүй)
       final VideoPlayerController newVideoController;
 
-      // Source-ийн video controller нь өмнө initialize хийгдсэн эсэхийг шалгах
       if (source.video.value.isInitialized) {
-        // Хэрэв аль хэдийн initialize хийгдсэн бол шинэ instance үүсгэх
         final videoUri = source.video.dataSource;
         newVideoController = VideoPlayerController.networkUrl(
           Uri.parse(videoUri),
@@ -530,17 +520,14 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
         newVideoController = source.video;
       }
 
-      // Initialize хийх
       await newVideoController.initialize();
 
-      // Хуучин video-г цэвэрлэх
       if (oldVideo != null) {
         oldVideo.removeListener(_videoListener);
         await oldVideo.pause();
         await oldVideo.dispose();
       }
 
-      // Шинэ video-г тохируулах
       _video = newVideoController;
       _video!.addListener(_videoListener);
       _activeSourceName = name;
@@ -551,9 +538,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
       await _video?.setLooping(looping);
       await _video?.setVolume(volume);
 
-      // ЗАСВАР: Position-г зөв тохируулах=
       if (inheritPosition) {
-        // Хэрэв lastPosition нь хүчинтэй бол түүнийг ашиглах
         if (lastPosition > Duration.zero &&
             lastPosition < _video!.value.duration) {
           await _video?.seekTo(lastPosition);
@@ -573,7 +558,6 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
       _isChangingSource = false;
       notifyListeners();
 
-      // Алдаа гарсан тохиолдолд хуучин video-г буцааж ашиглах
       if (oldVideo != null && oldVideo.value.isInitialized) {
         _video = oldVideo;
         _video!.addListener(_videoListener);
@@ -688,14 +672,17 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
         } else {
           if (_closeOverlayButtons == null) _startCloseOverlay();
         }
-      } else if (_isGoingToCloseOverlay) cancelCloseOverlay();
+      } else if (_isGoingToCloseOverlay) {
+        cancelCloseOverlay();
+      }
     }
 
-    //Одоогийн хадмал орчуулгыг харуулах
     if (_subtitle != null) {
       if (_activeSubtitleData != null) {
         if (!(position > _activeSubtitleData!.start &&
-            position < _activeSubtitleData!.end)) _findSubtitle();
+            position < _activeSubtitleData!.end)) {
+          _findSubtitle();
+        }
       } else {
         _findSubtitle();
       }
@@ -782,10 +769,8 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   //---------//
-  //ХАДМАЛ ОРЧУУЛГА//
+  //SUBTITLE//
   //---------//
-
-  /// --- SUBTITLE SIZE ---
 
   void _saveSubtitleSizeToStorage(int size) {
     Utils.setString(key: _subtitleSizeKey, value: size.toString());

@@ -6,7 +6,6 @@ class EpisodeMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // expo launch
     final VideoQuery query = VideoQuery();
     final style = query.videoStyle(context);
 

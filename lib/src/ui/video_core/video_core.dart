@@ -126,7 +126,6 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   void _setupPositionListener() {
     final controller = _query.video(context);
 
-    // Video position өөрчлөгдөх бүрт skip button-уудыг шалгах
     _positionListener = controller.video?.addListener(() {
       _checkSkipButtons();
     }) as StreamSubscription?;
@@ -139,19 +138,16 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     final metadata = _query.videoMetadata(context);
     final position = controller.position;
 
-    // OP Skip товчлуур шалгах
     final shouldShowOpSkip = metadata.opStart != Duration.zero &&
         metadata.opEnd != Duration.zero &&
         position >= metadata.opStart &&
         position < metadata.opEnd;
 
-    // ED Skip товчлуур шалгах
     final shouldShowEdSkip = metadata.edStart != Duration.zero &&
         metadata.edEnd != Duration.zero &&
         position >= metadata.edStart &&
         position < metadata.edEnd;
 
-    // Зөвхөн өөрчлөлт байвал л setState хийх
     if (showSkipStartButton != shouldShowOpSkip ||
         showSkipEndButton != shouldShowEdSkip) {
       setState(() {
@@ -680,7 +676,6 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             },
             endButton: () {
               controller.seekTo(metadata.edEnd);
-              // Товчлуур дарсны дараа шууд нуух
               setState(() {
                 showSkipEndButton = false;
               });
@@ -716,7 +711,6 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             },
             endButton: () {
               controller.seekTo(metadata.edEnd);
-              // Товчлуур дарсны дараа шууд нуух
               setState(() {
                 showSkipEndButton = false;
               });

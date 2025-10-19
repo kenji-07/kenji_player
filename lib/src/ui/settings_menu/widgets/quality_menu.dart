@@ -9,7 +9,6 @@ class QualityMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // expo launch
     final query = VideoQuery();
     final video = query.video(context, listen: true);
 

@@ -134,23 +134,18 @@ class KenjiPlayerState extends State<KenjiPlayer> {
     _controller.looping = widget.looping;
     _controller.isShowingThumbnail = _style.thumbnail != null;
 
-    // IMA Ad Tag URL шалгах
     final bool hasAdTagUrl =
         widget.imaAdTagUrl != null && widget.imaAdTagUrl!.isNotEmpty;
 
     if (hasAdTagUrl) {
-      // Ad байгаа үед төлөвийг тохируулах
       _controller.setImaAdTagUrl(widget.imaAdTagUrl!);
       await _controller.setAdLoadingState(true);
     } else {
-      // Ad байхгүй үед
       await _controller.setAdLoadingState(false);
     }
 
-    // Video initialize хийх
     await _controller.initialize(widget.source, autoPlay: widget.autoPlay);
 
-    // Video дууссаныг мэдэгдэх
     if (hasAdTagUrl) {
       _controller.video?.addListener(() {
         if (_controller.video!.value.isCompleted) {

@@ -11,7 +11,6 @@ class AspectMenu extends StatelessWidget {
     final query = VideoQuery();
     final controller = query.video(context, listen: true);
 
-    // Available BoxFit options
     final List<BoxFit> configKeys = [
       BoxFit.cover,
       BoxFit.contain,
@@ -30,14 +29,10 @@ class AspectMenu extends StatelessWidget {
                 final video = query.video(context);
                 video.setAspect(
                   fit,
-                ); // Pass the selected BoxFit to the video controller
+                );
               },
-              text: fit
-                  .toString()
-                  .split('.')
-                  .last, // Display 'cover', 'contain', etc.
-              selected: controller.currentAspect ==
-                  fit, // Highlight the selected aspect
+              text: fit.toString().split('.').last,
+              selected: controller.currentAspect == fit,
             ),
         ],
       ),
