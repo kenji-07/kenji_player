@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:animax_player/src/domain/entities/styles/bar.dart';
+import 'package:kenji_player/src/domain/entities/styles/bar.dart';
 
 class LockStyle {
   /// It is the style that will have all the icons and elements of the progress bar

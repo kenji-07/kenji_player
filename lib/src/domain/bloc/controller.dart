@@ -5,19 +5,18 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:interactive_media_ads/interactive_media_ads.dart';
 
-import 'package:animax_player/src/ui/fullscreen.dart';
-import 'package:animax_player/src/misc.dart';
-import 'package:animax_player/src/domain/entities/ads.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/domain/entities/subtitle.dart';
-import 'package:animax_player/src/domain/entities/video_source.dart';
+import 'package:kenji_player/src/ui/fullscreen.dart';
+import 'package:kenji_player/src/misc.dart';
+import 'package:kenji_player/src/domain/entities/ads.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/domain/entities/subtitle.dart';
+import 'package:kenji_player/src/domain/entities/video_source.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 const int _kMillisecondsToHideTheOverlay = 2800;
 
-class AnimaxPlayerController extends ChangeNotifier
-    with WidgetsBindingObserver {
+class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   /// Controls a platform video PLAYER, and provides updates when the state is
   /// changing.
   ///
@@ -29,7 +28,7 @@ class AnimaxPlayerController extends ChangeNotifier
   ///
   /// After [dispose] all further calls are ignored.
 
-  final List<AnimaxPlayerAd> adsSeen = [];
+  final List<KenjiPlayerAd> adsSeen = [];
 
   final String _aspectKey = 'currentAspect';
 
@@ -54,13 +53,13 @@ class AnimaxPlayerController extends ChangeNotifier
   String? _imaAdTagUrl;
 
   AdsManager? _adsManager;
-  AnimaxPlayerAd? _activeAd;
+  KenjiPlayerAd? _activeAd;
   Timer? _activeAdTimeRemaing;
   String? _activeSourceName;
   String? _activeSubtitle;
   SubtitleData? _activeSubtitleData;
   Duration? _adTimeWatched;
-  List<AnimaxPlayerAd>? _ads;
+  List<KenjiPlayerAd>? _ads;
   Timer? _closeOverlayButtons;
   Duration? _duration;
   bool _isBuffering = false,
@@ -92,7 +91,7 @@ class AnimaxPlayerController extends ChangeNotifier
 
   Map<String, VideoSource>? _source;
 
-  AnimaxPlayerSubtitle? _subtitle;
+  KenjiPlayerSubtitle? _subtitle;
   VideoPlayerController? _video;
 
   Duration get beginRange {
@@ -127,7 +126,7 @@ class AnimaxPlayerController extends ChangeNotifier
 
   VideoSource? get activeSource => _source?[_activeSourceName];
 
-  AnimaxPlayerAd? get activeAd => _activeAd;
+  KenjiPlayerAd? get activeAd => _activeAd;
 
   Duration? get adTimeWatched => _adTimeWatched;
 
@@ -137,7 +136,7 @@ class AnimaxPlayerController extends ChangeNotifier
 
   List<SubtitleData>? get subtitles => _subtitle?.subtitles;
 
-  AnimaxPlayerSubtitle? get subtitle => _subtitle;
+  KenjiPlayerSubtitle? get subtitle => _subtitle;
 
   String? get activeCaption => _activeSubtitle;
 
@@ -584,7 +583,7 @@ class AnimaxPlayerController extends ChangeNotifier
   }
 
   Future<void> changeSubtitle({
-    required AnimaxPlayerSubtitle? subtitle,
+    required KenjiPlayerSubtitle? subtitle,
     required String subtitleName,
   }) async {
     _activeSubtitle = subtitleName;
@@ -730,7 +729,7 @@ class AnimaxPlayerController extends ChangeNotifier
     final Duration position = this.position;
     bool foundOne = false;
 
-    for (AnimaxPlayerAd ad in _ads!) {
+    for (KenjiPlayerAd ad in _ads!) {
       final Duration start = _getAdStartTime(ad);
       if (position > start &&
           position < start + ad.durationToEnd &&
@@ -753,7 +752,7 @@ class AnimaxPlayerController extends ChangeNotifier
     }
   }
 
-  Duration _getAdStartTime(AnimaxPlayerAd ad) {
+  Duration _getAdStartTime(KenjiPlayerAd ad) {
     final double? fractionToStart = ad.fractionToStart;
     final Duration? durationToStart = ad.durationToStart;
     return durationToStart ?? duration * fractionToStart!;

@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:animax_player/src/domain/repositories/video.dart';
-import 'package:animax_player/src/domain/bloc/metadata.dart';
-import 'package:animax_player/src/animax_player.dart';
+import 'package:kenji_player/src/domain/repositories/video.dart';
+import 'package:kenji_player/src/domain/bloc/metadata.dart';
+import 'package:kenji_player/src/kenji_player.dart';
 
 class VideoQuery extends VideoQueryRepository {
   @override
-  AnimaxPlayerMetadata videoMetadata(
+  KenjiPlayerMetadata videoMetadata(
     BuildContext context, {
     bool listen = false,
   }) {
-    return Provider.of<AnimaxPlayerMetadata>(context, listen: listen);
+    return Provider.of<KenjiPlayerMetadata>(context, listen: listen);
   }
 
   @override
-  AnimaxPlayerController video(BuildContext context, {bool listen = false}) {
-    return Provider.of<AnimaxPlayerController>(context, listen: listen);
+  KenjiPlayerController video(BuildContext context, {bool listen = false}) {
+    return Provider.of<KenjiPlayerController>(context, listen: listen);
   }
 
   @override
-  AnimaxPlayerStyle videoStyle(BuildContext context, {bool listen = false}) {
-    return Provider.of<AnimaxPlayerMetadata>(context, listen: listen).style;
+  KenjiPlayerStyle videoStyle(BuildContext context, {bool listen = false}) {
+    return Provider.of<KenjiPlayerMetadata>(context, listen: listen).style;
   }
 
   @override

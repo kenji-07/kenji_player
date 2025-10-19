@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/secondary_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/secondary_menu_item.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/secondary_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/secondary_menu_item.dart';
 
 class SpeedMenu extends StatelessWidget {
   const SpeedMenu({super.key});

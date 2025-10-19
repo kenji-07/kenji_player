@@ -3,7 +3,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:animax_player/src/animax_player.dart';
+import 'package:kenji_player/src/kenji_player.dart';
 
 class VideoSource {
   VideoSource({
@@ -14,18 +14,18 @@ class VideoSource {
     this.range,
     this.httpHeaders,
   });
-  final List<AnimaxPlayerAd>? ads;
+  final List<KenjiPlayerAd>? ads;
   final Tween<Duration>? range;
   final VideoPlayerController video;
-  final Map<String, AnimaxPlayerSubtitle>? subtitle;
+  final Map<String, KenjiPlayerSubtitle>? subtitle;
   final String intialSubtitle;
   final Map<String, String>? httpHeaders;
 
   static Map<String, VideoSource> fromNetworkVideoSources(
     Map<String, String> sources, {
     String initialSubtitle = "",
-    Map<String, AnimaxPlayerSubtitle>? subtitle,
-    List<AnimaxPlayerAd>? ads,
+    Map<String, KenjiPlayerSubtitle>? subtitle,
+    List<KenjiPlayerAd>? ads,
     Tween<Duration>? range,
     Map<String, String>? httpHeaders,
   }) {
@@ -49,8 +49,8 @@ class VideoSource {
   static Future<Map<String, VideoSource>> fromM3u8PlaylistUrl(
     String m3u8, {
     String initialSubtitle = "",
-    Map<String, AnimaxPlayerSubtitle>? subtitle,
-    List<AnimaxPlayerAd>? ads,
+    Map<String, KenjiPlayerSubtitle>? subtitle,
+    List<KenjiPlayerAd>? ads,
     Tween<Duration>? range,
     String Function(String quality)? formatter,
     bool descending = true,

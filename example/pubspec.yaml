@@ -23,7 +23,7 @@ dependencies:
   flutter:
     sdk: flutter
   visibility_detector: ^0.4.0+2
-  animax_player:
+  kenji_player:
     path: "../"
   video_player: ^2.8.6
   wakelock_web: ^0.4.0

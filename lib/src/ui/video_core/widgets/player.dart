@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
 
 class VideoCorePlayer extends StatefulWidget {
   const VideoCorePlayer({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 enum CenterPlayAndPauseType { center, bottom }
 

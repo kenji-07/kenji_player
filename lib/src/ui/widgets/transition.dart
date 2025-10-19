@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:animax_player/src/misc.dart';
+import 'package:kenji_player/src/misc.dart';
 
 class LerpTween extends Tween<double> {
   LerpTween() : super(begin: 0.0, end: 1.0);

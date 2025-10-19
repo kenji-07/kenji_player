@@ -8,38 +8,38 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter/services.dart';
 
-import 'package:animax_player/src/misc.dart';
+import 'package:kenji_player/src/misc.dart';
 
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/volume_brightness.dart';
-import 'package:animax_player/src/domain/bloc/controller.dart';
-import 'package:animax_player/src/ui/video_core/widgets/ad.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/volume_brightness.dart';
+import 'package:kenji_player/src/domain/bloc/controller.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/ad.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
-import 'package:animax_player/src/ui/video_core/widgets/forward_and_rewind/layout.dart';
-import 'package:animax_player/src/ui/video_core/widgets/aspect_ratio.dart';
-import 'package:animax_player/src/ui/video_core/widgets/orientation.dart';
-import 'package:animax_player/src/ui/video_core/widgets/thumbnail.dart';
-import 'package:animax_player/src/ui/video_core/widgets/subtitle.dart';
-import 'package:animax_player/src/ui/video_core/widgets/player.dart';
-import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
-import 'package:animax_player/src/ui/widgets/transitions.dart';
-import 'package:animax_player/src/ui/overlay/overlay.dart';
-import 'package:animax_player/src/ui/overlay/overlay_control_mode.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/speed_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/aspect_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/caption_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/quality_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/episode_menu.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/forward_and_rewind/layout.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/aspect_ratio.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/orientation.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/thumbnail.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/subtitle.dart';
+import 'package:kenji_player/src/ui/video_core/widgets/player.dart';
+import 'package:kenji_player/src/ui/widgets/center_play_and_pause.dart';
+import 'package:kenji_player/src/ui/widgets/transitions.dart';
+import 'package:kenji_player/src/ui/overlay/overlay.dart';
+import 'package:kenji_player/src/ui/overlay/overlay_control_mode.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/speed_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/aspect_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/caption_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/quality_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/episode_menu.dart';
 
-class AnimaxPlayerCore extends StatefulWidget {
-  const AnimaxPlayerCore({super.key});
+class KenjiPlayerCore extends StatefulWidget {
+  const KenjiPlayerCore({super.key});
 
   @override
-  AnimaxPlayerCoreState createState() => AnimaxPlayerCoreState();
+  KenjiPlayerCoreState createState() => KenjiPlayerCoreState();
 }
 
-class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
+class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   final VideoQuery _query = VideoQuery();
 
   /// Variables for swipe to adjust volume/brightness
@@ -386,7 +386,7 @@ class AnimaxPlayerCoreState extends State<AnimaxPlayerCore> {
   //OVERLAY (TAP)//
   //-------------//
 
-  bool _canListenerMove([AnimaxPlayerController? controller]) {
+  bool _canListenerMove([KenjiPlayerController? controller]) {
     controller ??= _query.video(context);
     return !(controller.isDraggingProgressBar ||
         controller.activeAd != null ||

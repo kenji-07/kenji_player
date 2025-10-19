@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'package:animax_player/src/domain/entities/styles/center_play_and_pause.dart';
+import 'package:kenji_player/src/domain/entities/styles/center_play_and_pause.dart';
 
-import 'package:animax_player/src/domain/entities/styles/lock.dart';
-import 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
-import 'package:animax_player/src/domain/entities/styles/subtitle.dart';
-import 'package:animax_player/src/domain/entities/styles/fullscreen_subtitle.dart';
+import 'package:kenji_player/src/domain/entities/styles/lock.dart';
+import 'package:kenji_player/src/domain/entities/styles/progress_bar.dart';
+import 'package:kenji_player/src/domain/entities/styles/subtitle.dart';
+import 'package:kenji_player/src/domain/entities/styles/fullscreen_subtitle.dart';
 
-export 'package:animax_player/src/domain/entities/styles/bar.dart';
-export 'package:animax_player/src/domain/entities/styles/center_play_and_pause.dart';
-export 'package:animax_player/src/domain/entities/styles/progress_bar.dart';
-export 'package:animax_player/src/domain/entities/styles/subtitle.dart';
-export 'package:animax_player/src/domain/entities/styles/lock.dart';
+export 'package:kenji_player/src/domain/entities/styles/bar.dart';
+export 'package:kenji_player/src/domain/entities/styles/center_play_and_pause.dart';
+export 'package:kenji_player/src/domain/entities/styles/progress_bar.dart';
+export 'package:kenji_player/src/domain/entities/styles/subtitle.dart';
+export 'package:kenji_player/src/domain/entities/styles/lock.dart';
 
-class AnimaxPlayerStyle {
-  /// It is the main class of AnimaxPlayer styles, in this class you can almost
-  /// all styles and elements of the AnimaxPlayer
-  AnimaxPlayerStyle({
+class KenjiPlayerStyle {
+  /// It is the main class of KenjiPlayer styles, in this class you can almost
+  /// all styles and elements of the KenjiPlayer
+  KenjiPlayerStyle({
     ProgressBarStyle? progressBarStyle,
     LockStyle? lock,
     CenterPlayAndPauseWidgetStyle? centerPlayAndPauseStyle,
@@ -105,7 +105,7 @@ class AnimaxPlayerStyle {
   final Widget buffering;
 
   /// It is a quantity in milliseconds. It is the time it takes to take place
-  /// all transitions of the AnimaxPlayer ui,
+  /// all transitions of the KenjiPlayer ui,
   final Duration transitions;
 
   /// It is the design of the text that will be used in all the texts of the VideoViwer
@@ -120,7 +120,7 @@ class AnimaxPlayerStyle {
 
   final Alignment skipAdAlignment;
 
-  AnimaxPlayerStyle copyWith({
+  KenjiPlayerStyle copyWith({
     Widget? episode,
     ProgressBarStyle? progressBarStyle,
     LockStyle? lock,
@@ -136,7 +136,7 @@ class AnimaxPlayerStyle {
     Widget Function(Duration)? skipAdBuilder,
     Alignment? skipAdAlignment,
   }) {
-    return AnimaxPlayerStyle(
+    return KenjiPlayerStyle(
       episode: episode ?? this.episode,
       progressBarStyle: progressBarStyle ?? this.progressBarStyle,
       lock: lock ?? this.lock,
@@ -160,7 +160,7 @@ class AnimaxPlayerStyle {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is AnimaxPlayerStyle &&
+    return other is KenjiPlayerStyle &&
         other.episode == episode &&
         other.progressBarStyle == progressBarStyle &&
         other.lock == lock &&

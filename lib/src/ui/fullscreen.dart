@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/misc.dart';
+import 'package:kenji_player/src/misc.dart';
 
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/video_core/video_core.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/video_core/video_core.dart';
 
 class FullScreenPage extends StatefulWidget {
   const FullScreenPage({super.key});
@@ -58,7 +58,7 @@ class FullScreenPageState extends State<FullScreenPage> {
             await _query.video(context).openOrCloseFullscreen();
           }
         },
-        child: const AnimaxPlayerCore(),
+        child: const KenjiPlayerCore(),
       ),
     );
   }

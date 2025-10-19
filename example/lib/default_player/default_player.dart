@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:animax_player/animax_player.dart';
+import 'package:kenji_player/kenji_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
 
@@ -14,13 +14,13 @@ class DefaultVideoPlayer extends StatefulWidget {
 class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
-  late AnimaxPlayerController _controller;
+  late KenjiPlayerController _controller;
   final Map<String, String> customHeaders = {};
 
   @override
   void initState() {
     _playerKey = GlobalKey();
-    _controller = AnimaxPlayerController();
+    _controller = KenjiPlayerController();
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: AnimaxPlayer(
+      child: KenjiPlayer(
         seekTo: const Duration(milliseconds: 0),
         opStart: const Duration(seconds: 1),
         opEnd: const Duration(seconds: 10),
@@ -67,7 +67,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         volume: true,
         autoPlay: true,
         caption: true,
-        style: CustomAnimaxPlayerStyle(
+        style: CustomKenjiPlayerStyle(
           context: context,
           controller: _controller,
         ),
@@ -82,7 +82,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
               subtitle: {
                 for (var a = 0; a < Environment.subtitleUrls.length; a++)
                   Environment.subtitleUrls[a].subtitleLang:
-                      AnimaxPlayerSubtitle.network(
+                      KenjiPlayerSubtitle.network(
                     Environment.subtitleUrls[a].subtitleUrl,
                     type: SubtitleType.webvtt,
                   ),
@@ -94,10 +94,10 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
   }
 }
 
-class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
-  CustomAnimaxPlayerStyle({
+class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
+  CustomKenjiPlayerStyle({
     required BuildContext context,
-    required AnimaxPlayerController controller,
+    required KenjiPlayerController controller,
   }) : super(
           textStyle: const TextStyle(color: Colors.black),
           progressBarStyle: ProgressBarStyle(

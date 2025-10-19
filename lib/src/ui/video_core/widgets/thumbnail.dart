@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/widgets/transitions.dart';
-import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/widgets/transitions.dart';
+import 'package:kenji_player/src/ui/widgets/center_play_and_pause.dart';
 
 class VideoCoreThumbnail extends StatelessWidget {
   const VideoCoreThumbnail({super.key});

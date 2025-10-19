@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 class SecondaryMenuItem extends StatelessWidget {
   const SecondaryMenuItem({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoCoreActiveSubtitleText extends StatelessWidget {

@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-import 'package:animax_player/src/domain/bloc/controller.dart';
-import 'package:animax_player/src/domain/bloc/metadata.dart';
-import 'package:animax_player/src/domain/entities/styles/animax_player.dart';
-import 'package:animax_player/src/domain/entities/video_source.dart';
-import 'package:animax_player/src/ui/video_core/video_core.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/domain/bloc/controller.dart';
+import 'package:kenji_player/src/domain/bloc/metadata.dart';
+import 'package:kenji_player/src/domain/entities/styles/kenji_player.dart';
+import 'package:kenji_player/src/domain/entities/video_source.dart';
+import 'package:kenji_player/src/ui/video_core/video_core.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 export 'package:video_player/video_player.dart';
-export 'package:animax_player/src/domain/bloc/controller.dart';
-export 'package:animax_player/src/domain/entities/ads.dart';
-export 'package:animax_player/src/domain/entities/styles/animax_player.dart';
-export 'package:animax_player/src/domain/entities/subtitle.dart';
-export 'package:animax_player/src/domain/entities/video_source.dart';
+export 'package:kenji_player/src/domain/bloc/controller.dart';
+export 'package:kenji_player/src/domain/entities/ads.dart';
+export 'package:kenji_player/src/domain/entities/styles/kenji_player.dart';
+export 'package:kenji_player/src/domain/entities/subtitle.dart';
+export 'package:kenji_player/src/domain/entities/video_source.dart';
 
-class AnimaxPlayer extends StatefulWidget {
-  const AnimaxPlayer({
+class KenjiPlayer extends StatefulWidget {
+  const KenjiPlayer({
     super.key,
     required this.source,
     this.style,
@@ -58,8 +58,8 @@ class AnimaxPlayer extends StatefulWidget {
   ///Sets whether or not the video should loop after playing once.
   final bool looping;
 
-  /// It is an argument where you can change the design of almost the entire AnimaxPlayer
-  final AnimaxPlayerStyle? style;
+  /// It is an argument where you can change the design of almost the entire KenjiPlayer
+  final KenjiPlayerStyle? style;
 
   /// It is the Aspect Ratio that the widget.style.loading will take when the video
   /// is not initialized yet
@@ -88,7 +88,7 @@ class AnimaxPlayer extends StatefulWidget {
   /// To reclaim the resources used by the player call [dispose].
   ///
   /// After [dispose] all further calls are ignored.
-  final AnimaxPlayerController? controller;
+  final KenjiPlayerController? controller;
 
   ///When the video is fullscreen and landscape mode, It's able to scale itself until the screen boundaries
   final bool enableFullscreenScale;
@@ -108,19 +108,19 @@ class AnimaxPlayer extends StatefulWidget {
   final BoxFit aspect;
 
   @override
-  AnimaxPlayerState createState() => AnimaxPlayerState();
+  KenjiPlayerState createState() => KenjiPlayerState();
 }
 
-class AnimaxPlayerState extends State<AnimaxPlayer> {
-  late AnimaxPlayerController _controller;
-  late AnimaxPlayerStyle _style;
+class KenjiPlayerState extends State<KenjiPlayer> {
+  late KenjiPlayerController _controller;
+  late KenjiPlayerStyle _style;
   bool _initialized = false;
 
   @override
   void initState() {
-    _controller = widget.controller ?? AnimaxPlayerController();
-    _style = widget.style ?? AnimaxPlayerStyle();
-    _initAnimaxPlayer();
+    _controller = widget.controller ?? KenjiPlayerController();
+    _style = widget.style ?? KenjiPlayerStyle();
+    _initKenjiPlayer();
     super.initState();
   }
 
@@ -130,7 +130,7 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
     super.dispose();
   }
 
-  void _initAnimaxPlayer() async {
+  void _initKenjiPlayer() async {
     _controller.looping = widget.looping;
     _controller.isShowingThumbnail = _style.thumbnail != null;
 
@@ -171,7 +171,7 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
             providers: [
               ChangeNotifierProvider.value(value: _controller),
               Provider(
-                create: (_) => AnimaxPlayerMetadata(
+                create: (_) => KenjiPlayerMetadata(
                   style: _style,
                   rewindAmount: widget.rewindAmount,
                   forwardAmount: widget.forwardAmount,
@@ -192,7 +192,7 @@ class AnimaxPlayerState extends State<AnimaxPlayer> {
             ],
             builder: (context, child) {
               _controller.context = context;
-              return const AnimaxPlayerCore();
+              return const KenjiPlayerCore();
             },
           )
         : AspectRatio(

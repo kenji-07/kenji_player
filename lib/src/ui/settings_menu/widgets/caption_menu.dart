@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/domain/entities/subtitle.dart';
-import 'package:animax_player/src/domain/entities/video_source.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/domain/entities/subtitle.dart';
+import 'package:kenji_player/src/domain/entities/video_source.dart';
 
-import 'package:animax_player/src/ui/settings_menu/widgets/secondary_menu.dart';
-import 'package:animax_player/src/ui/settings_menu/widgets/secondary_menu_item.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/secondary_menu.dart';
+import 'package:kenji_player/src/ui/settings_menu/widgets/secondary_menu_item.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 class CaptionMenu extends StatelessWidget {
   const CaptionMenu({super.key});
 
   void onTap(
     BuildContext context,
-    AnimaxPlayerSubtitle? subtitle,
+    KenjiPlayerSubtitle? subtitle,
     String subtitleName,
   ) async {
     final query = VideoQuery();
@@ -49,7 +49,7 @@ class CaptionMenu extends StatelessWidget {
                     in video.source!.entries)
                   if (entry.key == activeSourceName &&
                       entry.value.subtitle != null)
-                    for (MapEntry<String, AnimaxPlayerSubtitle> subtitle
+                    for (MapEntry<String, KenjiPlayerSubtitle> subtitle
                         in entry.value.subtitle!.entries)
                       SecondaryMenuItem(
                         onTap: () {

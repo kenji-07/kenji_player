@@ -1,8 +1,8 @@
-import 'package:animax_player/src/domain/entities/styles/animax_player.dart';
+import 'package:kenji_player/src/domain/entities/styles/kenji_player.dart';
 import 'package:flutter/material.dart';
 
-class AnimaxPlayerMetadata {
-  AnimaxPlayerMetadata({
+class KenjiPlayerMetadata {
+  KenjiPlayerMetadata({
     required this.defaultAspectRatio,
     required this.rewindAmount,
     required this.forwardAmount,
@@ -41,20 +41,20 @@ class AnimaxPlayerMetadata {
   ///If it is `false`, you can rotate the entire screen in any position.
   final bool control;
 
-  ///It's the custom language can you set to the AnimaxPlayer.
+  ///It's the custom language can you set to the KenjiPlayer.
   ///
-  ///**EXAMPLE:** SETTING THE SPANISH LANGUAGE TO THE AnimaxPlayer
+  ///**EXAMPLE:** SETTING THE SPANISH LANGUAGE TO THE KenjiPlayer
   ///```dart
   /// //WAY 1
-  /// language: AnimaxPlayerLanguage.es
+  /// language: KenjiPlayerLanguage.es
   /// //WAY 2
-  /// language: AnimaxPlayerLanguage(quality: "Calidad", speed: "Velocidad", ...)
+  /// language: KenjiPlayerLanguage(quality: "Calidad", speed: "Velocidad", ...)
   /// //WAY 3
-  /// language: AnimaxPlayerLanguage.fromString("es")
+  /// language: KenjiPlayerLanguage.fromString("es")
   /// ```
 
-  /// It is an argument where you can change the design of almost the entire AnimaxPlayer
-  final AnimaxPlayerStyle style;
+  /// It is an argument where you can change the design of almost the entire KenjiPlayer
+  final KenjiPlayerStyle style;
 
   final bool enableFullscreenScale;
 

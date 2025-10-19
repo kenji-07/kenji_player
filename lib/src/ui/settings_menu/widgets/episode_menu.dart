@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:animax_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
 
 class EpisodeMenu extends StatelessWidget {
   const EpisodeMenu({super.key});

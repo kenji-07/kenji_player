@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:animax_player/animax_player.dart';
+import 'package:kenji_player/kenji_player.dart';
 import 'package:get/get.dart';
 
 class HlsVideoPlayer extends StatefulWidget {
@@ -13,7 +13,7 @@ class HlsVideoPlayer extends StatefulWidget {
 class HlsVideoPlayerState extends State<HlsVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
-  late AnimaxPlayerController _controller;
+  late KenjiPlayerController _controller;
   final Map<String, String> customHeaders = {
     'Authorization': 'Bearer your_token_here',
     'User-Agent': 'MyCustomApp/1.0',
@@ -23,7 +23,7 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
   @override
   void initState() {
     _playerKey = GlobalKey();
-    _controller = AnimaxPlayerController();
+    _controller = KenjiPlayerController();
     super.initState();
   }
 
@@ -62,7 +62,7 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
       ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return AnimaxPlayer(
+          return KenjiPlayer(
             source: snapshot.data!,
             seekTo: const Duration(
               milliseconds: 0,
@@ -79,7 +79,7 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
             volume: true, // 1
             autoPlay: true, // 1
             caption: true,
-            style: CustomAnimaxPlayerStyle(
+            style: CustomKenjiPlayerStyle(
                 context: context, controller: _controller),
           );
         }
@@ -89,10 +89,10 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
   }
 }
 
-class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
-  CustomAnimaxPlayerStyle({
+class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
+  CustomKenjiPlayerStyle({
     required BuildContext context,
-    required AnimaxPlayerController controller,
+    required KenjiPlayerController controller,
   }) : super(
           textStyle: const TextStyle(color: Colors.black),
           progressBarStyle: ProgressBarStyle(

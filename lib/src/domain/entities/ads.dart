@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-class AnimaxPlayerAd {
-  AnimaxPlayerAd({
+class KenjiPlayerAd {
+  KenjiPlayerAd({
     required this.durationToSkip,
     required this.deepLink,
     required this.child,
@@ -38,7 +38,7 @@ class AnimaxPlayerAd {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is AnimaxPlayerAd &&
+    return other is KenjiPlayerAd &&
         other.child == child &&
         other.durationToSkip == durationToSkip &&
         other.deepLink == deepLink &&

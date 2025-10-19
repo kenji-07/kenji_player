@@ -1,9 +1,7 @@
-name: animax_player
-description: Animax Video Player is a video player for flutter. The video_player plugin gives low level access for the video playback.
-# repository: https://github.com/GeekyAnts/flick-video-player
-# homepage: https://github.com/GeekyAnts/flick-video-player
-
-version: 1.0.2
+name: kenji_player
+description: Kenji Video Player is a video player for flutter. The video_player plugin gives low level access for the video playback.
+homepage: https://github.com/kenji-07/kenji_player
+version: 1.0.0
 
 environment:
   sdk: ">=3.2.3 <4.0.0"

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-import 'package:animax_player/src/data/repositories/video.dart';
-import 'package:animax_player/src/ui/overlay/widgets/background.dart';
-import 'package:animax_player/src/ui/overlay/widgets/bottom.dart';
-import 'package:animax_player/src/ui/widgets/center_play_and_pause.dart';
-import 'package:animax_player/src/ui/widgets/transitions.dart';
-import 'package:animax_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/overlay/widgets/background.dart';
+import 'package:kenji_player/src/ui/overlay/widgets/bottom.dart';
+import 'package:kenji_player/src/ui/widgets/center_play_and_pause.dart';
+import 'package:kenji_player/src/ui/widgets/transitions.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
 
 class VideoCoreOverlay extends StatelessWidget {
   final Widget child;

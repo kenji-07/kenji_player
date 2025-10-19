@@ -19,7 +19,7 @@ class SubtitleData {
   final String url;
 }
 
-class AnimaxPlayerSubtitle {
+class KenjiPlayerSubtitle {
   SubtitleIntializeType intializedType;
   final SubtitleType type;
   late String content;
@@ -27,12 +27,12 @@ class AnimaxPlayerSubtitle {
 
   List<SubtitleData> subtitles_ = [];
 
-  AnimaxPlayerSubtitle.network(
+  KenjiPlayerSubtitle.network(
     this.url_, {
     this.type = SubtitleType.webvtt,
   }) : intializedType = SubtitleIntializeType.network;
 
-  AnimaxPlayerSubtitle.content(
+  KenjiPlayerSubtitle.content(
     String content,
     String url_, {
     this.type = SubtitleType.webvtt,

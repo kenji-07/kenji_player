@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:animax_player/animax_player.dart';
+import 'package:kenji_player/kenji_player.dart';
 import 'package:get/get.dart';
 import '../utils/environment.dart';
 
@@ -14,13 +14,13 @@ class VastADVideoPlayer extends StatefulWidget {
 class VastADVideoPlayerState extends State<VastADVideoPlayer>
     with WidgetsBindingObserver {
   late GlobalKey _playerKey;
-  late AnimaxPlayerController _controller;
+  late KenjiPlayerController _controller;
   final Map<String, String> customHeaders = {};
 
   @override
   void initState() {
     _playerKey = GlobalKey();
-    _controller = AnimaxPlayerController();
+    _controller = KenjiPlayerController();
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: AnimaxPlayer(
+      child: KenjiPlayer(
         seekTo: const Duration(milliseconds: 0),
         opStart: const Duration(seconds: 1),
         opEnd: const Duration(seconds: 10),
@@ -68,7 +68,7 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
         caption: true,
         imaAdTagUrl:
             'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpremidpost&ciu_szs=300x250&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&cmsid=496&vid=short_onecue&correlator=',
-        style: CustomAnimaxPlayerStyle(
+        style: CustomKenjiPlayerStyle(
           context: context,
           controller: _controller,
         ),
@@ -83,7 +83,7 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
               subtitle: {
                 for (var a = 0; a < Environment.subtitleUrls.length; a++)
                   Environment.subtitleUrls[a].subtitleLang:
-                      AnimaxPlayerSubtitle.network(
+                      KenjiPlayerSubtitle.network(
                     Environment.subtitleUrls[a].subtitleUrl,
                     type: SubtitleType.webvtt,
                   ),
@@ -95,10 +95,10 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
   }
 }
 
-class CustomAnimaxPlayerStyle extends AnimaxPlayerStyle {
-  CustomAnimaxPlayerStyle({
+class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
+  CustomKenjiPlayerStyle({
     required BuildContext context,
-    required AnimaxPlayerController controller,
+    required KenjiPlayerController controller,
   }) : super(
           textStyle: const TextStyle(color: Colors.black),
           progressBarStyle: ProgressBarStyle(
