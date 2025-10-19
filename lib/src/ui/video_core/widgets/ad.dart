@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:kenji_player/src/ui/widgets/helpers.dart';
 import 'package:kenji_player/src/data/repositories/video.dart';

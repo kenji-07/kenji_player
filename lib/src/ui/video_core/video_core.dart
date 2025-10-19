@@ -71,8 +71,8 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   final ValueNotifier<int> _forwardAndRewindSecondsAmount = ValueNotifier<int>(
     1,
   );
-  int _rewindDoubleTapCount = 0;
-  int _forwardDoubleTapCount = 0;
+  int rewindDoubleTapCounts = 0;
+  int forwardDoubleTapCount = 0;
   int _defaultRewindAmount = -10;
   int _defaultForwardAmount = 10;
   Timer? _rewindDoubleTapTimer;
@@ -411,17 +411,17 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     final controller = _query.video(context);
     if (_canListenerMove(controller)) {
       if (index == 0) {
-        if (!showAMomentRewindIcons[index]) _rewindDoubleTapCount = 0;
+        if (!showAMomentRewindIcons[index]) rewindDoubleTapCounts = 0;
         _rewindDoubleTapTimer?.cancel();
-        _rewindDoubleTapCount += 1;
+        rewindDoubleTapCounts += 1;
         _rewindDoubleTapTimer = Misc.timer(600, () {
           showAMomentRewindIcons[index] = false;
           setState(() {});
         });
       } else {
-        if (!showAMomentRewindIcons[index]) _forwardDoubleTapCount = 0;
+        if (!showAMomentRewindIcons[index]) forwardDoubleTapCount = 0;
         _forwardDoubleTapTimer?.cancel();
-        _forwardDoubleTapCount += 1;
+        forwardDoubleTapCount += 1;
         _forwardDoubleTapTimer = Misc.timer(600, () {
           showAMomentRewindIcons[index] = false;
           setState(() {});
@@ -601,15 +601,11 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
                 clipBehavior: Clip.hardEdge,
                 fit: controller.currentAspect,
                 child: SizedBox(
-                  width: controller != null
-                      ? controller.video!.value.size.width != 0
-                          ? controller.video!.value.size.width
-                          : 640
+                  width: controller.video!.value.size.width != 0
+                      ? controller.video!.value.size.width
                       : 640,
-                  height: controller != null
-                      ? controller.video!.value.size.height != 0
-                          ? controller.video!.value.size.height
-                          : 480
+                  height: controller.video!.value.size.height != 0
+                      ? controller.video!.value.size.height
                       : 480,
                   child: const VideoCorePlayer(),
                 ),
@@ -859,15 +855,11 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
                 clipBehavior: Clip.hardEdge,
                 fit: controller.currentAspect,
                 child: SizedBox(
-                  width: controller != null
-                      ? controller.video!.value.size.width != 0
-                          ? controller.video!.value.size.width
-                          : 640
+                  width: controller.video!.value.size.width != 0
+                      ? controller.video!.value.size.width
                       : 640,
-                  height: controller != null
-                      ? controller.video!.value.size.height != 0
-                          ? controller.video!.value.size.height
-                          : 480
+                  height: controller.video!.value.size.height != 0
+                      ? controller.video!.value.size.height
                       : 480,
                   child: const VideoCorePlayer(),
                 ),

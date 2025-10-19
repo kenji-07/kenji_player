@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../utils/environment.dart';
 
 class VastADVideoPlayer extends StatefulWidget {
-  VastADVideoPlayer({Key? key}) : super(key: key);
+  const VastADVideoPlayer({Key? key}) : super(key: key);
 
   @override
   State<VastADVideoPlayer> createState() => VastADVideoPlayerState();
@@ -115,9 +115,9 @@ class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
+              child: const Text(
                 'Hi',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

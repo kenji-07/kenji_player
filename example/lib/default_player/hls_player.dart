@@ -4,7 +4,7 @@ import 'package:kenji_player/kenji_player.dart';
 import 'package:get/get.dart';
 
 class HlsVideoPlayer extends StatefulWidget {
-  HlsVideoPlayer({Key? key}) : super(key: key);
+  const HlsVideoPlayer({Key? key}) : super(key: key);
 
   @override
   State<HlsVideoPlayer> createState() => HlsVideoPlayerState();
@@ -109,9 +109,9 @@ class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
+              child: const Text(
                 'Hi',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

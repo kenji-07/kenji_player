@@ -1093,15 +1093,11 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   void _loadPlayerSettingsFromStorage() {
     // Subtitle size
     final sizeValue = Utils.getString(key: _subtitleSizeKey);
-    if (sizeValue != null) {
-      _currentSubtitleSize = int.tryParse(sizeValue) ?? 23;
-    }
+    _currentSubtitleSize = int.tryParse(sizeValue) ?? 23;
 
     // Aspect ratio (BoxFit)
     final aspectValue = Utils.getString(key: _aspectKey);
-    if (aspectValue != null) {
-      _currentAspect = _boxFitFromString(aspectValue);
-    }
+    _currentAspect = _boxFitFromString(aspectValue);
   }
 
   void _saveAspectToStorage(BoxFit aspect) {

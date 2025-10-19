@@ -5,9 +5,11 @@ import 'default_player/from_network_player.dart';
 import 'default_player/vast_ad_player.dart';
 import 'default_player/custom_ad_player.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
@@ -44,7 +46,7 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HlsPage()),
+                MaterialPageRoute(builder: (context) => const HlsPage()),
               );
             },
           ),
@@ -53,7 +55,7 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FromNetworkPage()),
+                MaterialPageRoute(builder: (context) => const FromNetworkPage()),
               );
             },
           ),
@@ -62,7 +64,7 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => VastADPage()),
+                MaterialPageRoute(builder: (context) => const VastADPage()),
               );
             },
           ),
@@ -71,7 +73,7 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CustomAdPage()),
+                MaterialPageRoute(builder: (context) => const CustomAdPage()),
               );
             },
           ),
@@ -100,7 +102,7 @@ class DefaultPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 250,
-            child: DefaultVideoPlayer(),
+            child: const DefaultVideoPlayer(),
           ),
         ),
       ),
@@ -127,7 +129,7 @@ class HlsPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 250,
-            child: HlsVideoPlayer(),
+            child: const HlsVideoPlayer(),
           ),
         ),
       ),
@@ -154,7 +156,7 @@ class FromNetworkPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 250,
-            child: FromNetworkVideoPlayer(),
+            child: const FromNetworkVideoPlayer(),
           ),
         ),
       ),
@@ -181,7 +183,7 @@ class VastADPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 250,
-            child: VastADVideoPlayer(),
+            child: const VastADVideoPlayer(),
           ),
         ),
       ),
@@ -208,7 +210,7 @@ class CustomAdPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 250,
-            child: CustomADPlayer(),
+            child: const CustomADPlayer(),
           ),
         ),
       ),

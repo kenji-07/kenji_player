@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../utils/environment.dart';
 
 class CustomADPlayer extends StatefulWidget {
-  CustomADPlayer({Key? key}) : super(key: key);
+  const CustomADPlayer({Key? key}) : super(key: key);
 
   @override
   State<CustomADPlayer> createState() => CustomADPlayerState();
@@ -123,19 +123,19 @@ class CustomADPlayerState extends State<CustomADPlayer>
       return Container(
         padding: const EdgeInsets.all(15),
         color: Colors.amber,
-        child: Center(
+        child: const Center(
             child: Text(
           'Hiii',
-          style: const TextStyle(color: Colors.white, fontSize: 22),
+          style: TextStyle(color: Colors.white, fontSize: 22),
         )),
       );
     } else if (type == 3) {
       return Container(
         color: Colors.amber,
-        child: Center(
+        child: const Center(
             child: Text(
           'else Hii',
-          style: const TextStyle(color: Colors.white, fontSize: 22),
+          style: TextStyle(color: Colors.white, fontSize: 22),
         )),
       );
       // return ColoredBox(
@@ -145,10 +145,10 @@ class CustomADPlayerState extends State<CustomADPlayer>
     } else {
       return Container(
         color: Colors.amber,
-        child: Center(
+        child: const Center(
             child: Text(
           'else Hii',
-          style: const TextStyle(color: Colors.white, fontSize: 22),
+          style: TextStyle(color: Colors.white, fontSize: 22),
         )),
       );
     }
@@ -175,9 +175,9 @@ class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
+              child: const Text(
                 'Hi',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

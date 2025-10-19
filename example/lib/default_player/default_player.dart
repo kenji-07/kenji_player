@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../utils/environment.dart';
 
 class DefaultVideoPlayer extends StatefulWidget {
-  DefaultVideoPlayer({Key? key}) : super(key: key);
+  const DefaultVideoPlayer({Key? key}) : super(key: key);
 
   @override
   State<DefaultVideoPlayer> createState() => DefaultVideoPlayerState();
@@ -61,7 +61,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: true,
+        control: false,
         enableFullscreenScale: false,
         brightness: true,
         volume: true,
@@ -114,9 +114,9 @@ class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
+              child: const Text(
                 'Hi',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

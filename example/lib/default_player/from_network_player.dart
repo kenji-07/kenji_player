@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../utils/environment.dart';
 
 class FromNetworkVideoPlayer extends StatefulWidget {
-  FromNetworkVideoPlayer({Key? key}) : super(key: key);
+  const FromNetworkVideoPlayer({Key? key}) : super(key: key);
 
   @override
   State<FromNetworkVideoPlayer> createState() => FromNetworkVideoPlayerState();
@@ -112,9 +112,9 @@ class CustomKenjiPlayerStyle extends KenjiPlayerStyle {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
+              child: const Text(
                 'Hi',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),
