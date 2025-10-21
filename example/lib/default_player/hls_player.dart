@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kenji_player/kenji_player.dart';
-import 'package:get/get.dart';
 
 class HlsVideoPlayer extends StatefulWidget {
   const HlsVideoPlayer({Key? key}) : super(key: key);
@@ -42,11 +41,6 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (bool didPop, FormData? result) async {
-        if (didPop) {
-          return;
-        }
-      },
       child:
           Scaffold(backgroundColor: Colors.blueGrey, body: _buildM3U8Player()),
     );

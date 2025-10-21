@@ -849,7 +849,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
       _vibrateOnce();
       _isGoingToOpenOrCloseFullscreen = true;
       if (!_isFullScreen) {
-        await openFullScreen(seekTo);
+        await openFullScreen();
       } else {
         await closeFullScreen();
       }
@@ -859,7 +859,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   ///When you want to open FullScreen Page, you need pass the FullScreen's context,
-  Future<void> openFullScreen(seekTo) async {
+  Future<void> openFullScreen() async {
     if (context != null && !_isFullScreen) {
       _isFullScreen = true;
       final VideoQuery query = VideoQuery();

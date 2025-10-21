@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kenji_player/kenji_player.dart';
-import 'package:get/get.dart';
+
 import '../utils/environment.dart';
 
 class VastADVideoPlayer extends StatefulWidget {
@@ -39,11 +39,6 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (bool didPop, FormData? result) async {
-        if (didPop) {
-          return;
-        }
-      },
       child: Scaffold(backgroundColor: Colors.blueGrey, body: _buildPlayer()),
     );
   }

@@ -181,7 +181,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     return MediaQuery.of(context).size.width;
   }
 
-  getBatteryLevel() async {
+  Future<void> getBatteryLevel() async {
     final level = await battery.batteryLevel;
     if (mounted) {
       setState(() {
@@ -522,7 +522,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     }
   }
 
-  Widget _global(bool canScale, overlayVisible) {
+  Widget _global(bool canScale, bool overlayVisible) {
     final metadata = _query.videoMetadata(context);
     final controller = _query.video(context);
     final bool scale = metadata.control;
@@ -547,7 +547,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   //--------//
   //GESTURES//
   //--------//
-  Widget _globalGesture(bool canScale, overlayVisible) {
+  Widget _globalGesture(bool canScale, bool overlayVisible) {
     final metadata = _query.videoMetadata(context);
 
     final controller = _query.video(context);
@@ -580,7 +580,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
         : _player(overlayVisible);
   }
 
-  Widget _player(overlayVisible) {
+  Widget _player(bool overlayVisible) {
     final controller = _query.video(context, listen: true);
     final bool isFullScreen = controller.isFullScreen;
     final style = _query.videoStyle(context);
@@ -833,7 +833,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     );
   }
 
-  Widget _playerLock(bool canScale, overlayVisible) {
+  Widget _playerLock(bool canScale, bool overlayVisible) {
     final controller = _query.video(context);
     final bool isFullScreen = controller.isFullScreen;
     final metadata = _query.videoMetadata(context);
