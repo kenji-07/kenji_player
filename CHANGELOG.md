@@ -17,3 +17,8 @@ Breaking Change Updates AdsRequest.adTagUrl to return null when an ad tag is not
 ## 1.0.4
 
 Bug fixed
+
+
+## 1.0.5
+
+fix: seekTo error resolved and UI/icons improved for better user experience
