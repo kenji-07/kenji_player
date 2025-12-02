@@ -6,7 +6,6 @@ class KenjiPlayerMetadata {
     required this.defaultAspectRatio,
     required this.rewindAmount,
     required this.forwardAmount,
-    required this.control,
     required this.style,
     required this.enableFullscreenScale,
     required this.volume,
@@ -39,7 +38,6 @@ class KenjiPlayerMetadata {
   ///If it is `true`, when entering the fullscreen it will be fixed
   ///in landscape mode and it will not be possible to rotate it in portrait.
   ///If it is `false`, you can rotate the entire screen in any position.
-  final bool control;
 
   ///It's the custom language can you set to the KenjiPlayer.
   ///

@@ -14,7 +14,8 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
   late GlobalKey _playerKey;
   late KenjiPlayerController _controller;
   final Map<String, String> customHeaders = {
-    'Authorization': 'Bearer your_token_here',
+    'Authorization':
+        'Bearer your_ultra_secure_hls_token_minimum_32_characters_long',
     'User-Agent': 'MyCustomApp/1.0',
     'Custom-Header': 'custom_value',
   };
@@ -49,7 +50,7 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
   Widget _buildM3U8Player() {
     return FutureBuilder<Map<String, VideoSource>>(
       future: VideoSource.fromM3u8PlaylistUrl(
-        'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+        'http://169.254.1.199:7785/storage/media/hls/0a5454c0-36ba-4219-b98d-8994ac0f6af5/master.m3u8',
         httpHeaders: customHeaders, // M3U8-д headers нэмэх
         formatter: (quality) =>
             quality == 'Auto' ? 'Automatic' : '${quality.split('x').last}p',
@@ -68,7 +69,6 @@ class HlsVideoPlayerState extends State<HlsVideoPlayer>
             key: _playerKey, // 1
             controller: _controller, // 1
             lock: true, // 1 - Ажиллаж байна. 0 - Ажиллахгүй байна.
-            control: false, // control block
             brightness: true, // 1
             volume: true, // 1
             autoPlay: true, // 1

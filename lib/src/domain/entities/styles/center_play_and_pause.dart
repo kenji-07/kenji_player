@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CenterPlayAndPauseWidgetStyle {
   /// With this argument you will change the play and pause icons, also the style
@@ -15,15 +15,21 @@ class CenterPlayAndPauseWidgetStyle {
     this.circleBorder,
     this.circleRadius = 60,
   })  : background = background ?? Colors.black.withValues(alpha: 0.3),
-        play =
-            play ?? const Icon(Icons.play_arrow, color: Colors.white, size: 45),
-        pause = pause ?? const Icon(Icons.pause, color: Colors.white, size: 45),
+        play = play ??
+            Icon(PhosphorIcons.play(PhosphorIconsStyle.fill),
+                color: Colors.white, size: 35),
+        pause = pause ??
+            Icon(PhosphorIcons.pause(PhosphorIconsStyle.fill),
+                color: Colors.white, size: 35),
         replay = replay ??
-            const Icon(Iconsax.refresh_copy, color: Colors.white, size: 30),
+            Icon(PhosphorIcons.arrowsClockwise(),
+                color: Colors.white, size: 30),
         rewind = rewind ??
-            const Icon(Icons.fast_rewind, color: Colors.white, size: 30),
+            Icon(PhosphorIcons.rewind(PhosphorIconsStyle.fill),
+                color: Colors.white, size: 30),
         forward = forward ??
-            const Icon(Icons.fast_forward, color: Colors.white, size: 30);
+            Icon(PhosphorIcons.fastForward(PhosphorIconsStyle.fill),
+                color: Colors.white, size: 30);
 
   final Widget rewind;
   final Widget forward;

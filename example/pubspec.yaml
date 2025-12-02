@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   http: ^1.5.0
   video_player: ^2.8.6
+  dio: ^5.9.0
   kenji_player:
     path: "../"
 

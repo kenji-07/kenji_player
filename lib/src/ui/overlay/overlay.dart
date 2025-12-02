@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:kenji_player/src/data/repositories/video.dart';
 import 'package:kenji_player/src/ui/overlay/widgets/background.dart';
@@ -40,8 +40,6 @@ class VideoCoreOverlay extends StatelessWidget {
 
     final bool caption = metadata.caption;
 
-    final bool scale = metadata.control;
-
     final barStyle = style.progressBarStyle;
     final double padding = barStyle.paddingBeetwen;
     final EdgeInsets halfPadding = EdgeInsets.all(padding / 2);
@@ -50,86 +48,81 @@ class VideoCoreOverlay extends StatelessWidget {
       visible: !controller.isShowingThumbnail,
       child: Stack(
         children: [
-          if (!scale)
-            if (header != null)
-              CustomSwipeTransition(
-                axisAlignment: 1.0,
-                visible: overlayVisible,
-                child: GradientBackground(
-                  end: Alignment.topCenter,
-                  begin: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
-                    child: SizedBox(
-                      height: 62,
-                      child: Column(
-                        children: [
-                          child,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(child: header),
-                              Row(
-                                children: [
-                                  /// Aspect
-                                  if (!scale)
-                                    SplashCircularIcon(
-                                      padding: halfPadding,
-                                      onTap: () => controller.aspect(),
-                                      child: const Icon(
-                                        Iconsax.toggle_off_copy,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
+          if (header != null)
+            CustomSwipeTransition(
+              axisAlignment: 1.0,
+              visible: overlayVisible,
+              child: GradientBackground(
+                end: Alignment.topCenter,
+                begin: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                  child: SizedBox(
+                    height: 62,
+                    child: Column(
+                      children: [
+                        child,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(child: header),
+                            Row(
+                              children: [
+                                /// Aspect
+                                SplashCircularIcon(
+                                  padding: halfPadding,
+                                  onTap: () => controller.aspect(),
+                                  child: Icon(
+                                    PhosphorIcons.frameCorners(),
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
 
-                                  /// Speed
-                                  if (!scale)
-                                    SplashCircularIcon(
-                                      padding: halfPadding,
-                                      onTap: () => controller.speed(),
-                                      child: const Icon(
-                                        Iconsax.timer_1_copy,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
+                                /// Speed
+                                SplashCircularIcon(
+                                  padding: halfPadding,
+                                  onTap: () => controller.speed(),
+                                  child: Icon(
+                                    PhosphorIcons.gauge(),
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
 
-                                  /// CC Caption
-                                  if (!scale)
-                                    if (caption)
-                                      SplashCircularIcon(
-                                        padding: halfPadding,
-                                        onTap: () => controller.caption(),
-                                        child: const Icon(
-                                          Iconsax.creative_commons_copy,
-                                          color: Colors.white,
-                                          size: 20,
-                                        ),
-                                      ),
-
-                                  /// HD
-                                  if (!scale)
-                                    SplashCircularIcon(
-                                      padding: halfPadding,
-                                      onTap: () => controller.quality(),
-                                      child: const Icon(
-                                        Iconsax.setting_copy,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
+                                /// CC Caption
+                                if (caption)
+                                  SplashCircularIcon(
+                                    padding: halfPadding,
+                                    onTap: () => controller.caption(),
+                                    child: Icon(
+                                      PhosphorIcons.closedCaptioning(),
+                                      color: Colors.white,
+                                      size: 20,
                                     ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                                  ),
+
+                                /// HD
+                                SplashCircularIcon(
+                                  padding: halfPadding,
+                                  onTap: () => controller.quality(),
+                                  child: Icon(
+                                    PhosphorIcons.highDefinition(),
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+            ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -142,7 +135,7 @@ class VideoCoreOverlay extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CustomOpacityTransition(
-                      visible: !scale && showSkipStartButton,
+                      visible: showSkipStartButton,
                       child: GestureDetector(
                           onTap: startButton,
                           child: Container(
@@ -163,7 +156,7 @@ class VideoCoreOverlay extends StatelessWidget {
                             ),
                           ))),
                   CustomOpacityTransition(
-                      visible: !scale && showSkipEndButton,
+                      visible: showSkipEndButton,
                       child: GestureDetector(
                           onTap: endButton,
                           child: Container(

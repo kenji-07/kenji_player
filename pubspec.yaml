@@ -22,7 +22,7 @@ dependencies:
   animate_do: ^4.2.0
   url_launcher: ^6.3.2
   get_storage: ^2.1.1
-  iconsax_flutter: ^1.0.1
+  phosphor_flutter: ^2.1.0
   interactive_media_ads: ^0.3.0+2
 
 dev_dependencies:
@@ -32,13 +32,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-assets:
-    - packages/iconsax_flutter/fonts/
-
-fonts:
-    - family: Iconsax
-      fonts:
-        - asset: packages/iconsax_flutter/fonts/Iconsax.ttf
 
 topics:
   - video-player

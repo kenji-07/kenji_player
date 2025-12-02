@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:kenji_player/src/domain/entities/styles/bar.dart';
 
 class LockStyle {
@@ -14,9 +14,9 @@ class LockStyle {
         backgroundColor =
             backgroundColor ?? Colors.black.withValues(alpha: 0.3),
         lock = lock ??
-            const Icon(Iconsax.lock_copy, color: Colors.white, size: 20),
-        locked = locked ??
-            const Icon(Iconsax.lock_slash_copy, color: Colors.white, size: 20);
+            Icon(PhosphorIcons.lockOpen(), color: Colors.white, size: 20),
+        locked =
+            locked ?? Icon(PhosphorIcons.lock(), color: Colors.white, size: 20);
 
   /// It is the padding that will have the icons and the progressBar
   final double paddingBeetwen;

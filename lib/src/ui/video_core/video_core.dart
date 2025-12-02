@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:battery_plus/battery_plus.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/services.dart';
 
 import 'package:kenji_player/src/misc.dart';
@@ -25,7 +25,6 @@ import 'package:kenji_player/src/ui/video_core/widgets/player.dart';
 import 'package:kenji_player/src/ui/widgets/center_play_and_pause.dart';
 import 'package:kenji_player/src/ui/widgets/transitions.dart';
 import 'package:kenji_player/src/ui/overlay/overlay.dart';
-import 'package:kenji_player/src/ui/overlay/overlay_control_mode.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/speed_menu.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/aspect_menu.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/caption_menu.dart';
@@ -523,23 +522,16 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   }
 
   Widget _global(bool canScale, bool overlayVisible) {
-    final metadata = _query.videoMetadata(context);
     final controller = _query.video(context);
-    final bool scale = metadata.control;
 
     return Stack(
       children: [
         _globalGesture(canScale, overlayVisible),
-        if (!scale)
-          rightPositioned(controller.isShowingSpeed, const SpeedMenu()),
-        if (!scale)
-          rightPositioned(controller.isShowingAspect, const AspectMenu()),
-        if (!scale)
-          rightPositioned(controller.isShowingCaption, const CaptionMenu()),
-        if (!scale)
-          rightPositioned(controller.isShowingQuality, const QualityMenu()),
-        if (!scale)
-          rightPositioned(controller.isShowingEpisode, const EpisodeMenu()),
+        rightPositioned(controller.isShowingSpeed, const SpeedMenu()),
+        rightPositioned(controller.isShowingAspect, const AspectMenu()),
+        rightPositioned(controller.isShowingCaption, const CaptionMenu()),
+        rightPositioned(controller.isShowingQuality, const QualityMenu()),
+        rightPositioned(controller.isShowingEpisode, const EpisodeMenu()),
       ],
     );
   }
@@ -548,36 +540,30 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
   //GESTURES//
   //--------//
   Widget _globalGesture(bool canScale, bool overlayVisible) {
-    final metadata = _query.videoMetadata(context);
-
     final controller = _query.video(context);
     final bool isFullScreen = controller.isFullScreen;
-    final bool scale = metadata.control;
 
     double currentValue = getCurrentVideoValue();
 
-    return !scale
-        ? GestureDetector(
-            onLongPress: controller.isPlaying ? onLongPressFunc : null,
-            onLongPressUp: controller.isPlaying ? onLongPressUpFunc : null,
-            onVerticalDragUpdate: isFullScreen ? onBrightnessUpdateFun : null,
-            onVerticalDragStart: isFullScreen ? onBrightnessStartFun : null,
-            onVerticalDragEnd: isFullScreen ? onBrightnessEndFun : null,
-            onHorizontalDragStart: (d) =>
-                onVideoTimeChangeUpdate.call(currentValue),
-            onHorizontalDragUpdate: (d) {
-              double deltaDx = d.delta.dx;
-              if (deltaDx == 0) {
-                return;
-              }
-              null;
-            },
-            onHorizontalDragEnd: (d) {
-              null;
-            },
-            child: _player(overlayVisible),
-          )
-        : _player(overlayVisible);
+    return GestureDetector(
+      onLongPress: controller.isPlaying ? onLongPressFunc : null,
+      onLongPressUp: controller.isPlaying ? onLongPressUpFunc : null,
+      onVerticalDragUpdate: isFullScreen ? onBrightnessUpdateFun : null,
+      onVerticalDragStart: isFullScreen ? onBrightnessStartFun : null,
+      onVerticalDragEnd: isFullScreen ? onBrightnessEndFun : null,
+      onHorizontalDragStart: (d) => onVideoTimeChangeUpdate.call(currentValue),
+      onHorizontalDragUpdate: (d) {
+        double deltaDx = d.delta.dx;
+        if (deltaDx == 0) {
+          return;
+        }
+        null;
+      },
+      onHorizontalDragEnd: (d) {
+        null;
+      },
+      child: _player(overlayVisible),
+    );
   }
 
   Widget _player(bool overlayVisible) {
@@ -585,7 +571,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     final bool isFullScreen = controller.isFullScreen;
     final style = _query.videoStyle(context);
     final metadata = _query.videoMetadata(context);
-    final bool scale = metadata.control;
+    final bool scale = false;
     return Stack(
       children: [
         Positioned.fill(
@@ -612,7 +598,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
 
         // ========== END IMA ADS ==========
 
-        if (!scale) const VideoCoreActiveSubtitleText(),
+        VideoCoreActiveSubtitleText(),
         GestureDetector(
           onTap: () => _query.video(context).showAndHideOverlay(),
           behavior: HitTestBehavior.opaque,
@@ -622,19 +608,18 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
           ),
         ),
 
-        if (!scale)
-          GestureDetector(
-            onTap: () => _query.video(context).showAndHideOverlay(),
-            behavior: HitTestBehavior.opaque,
-            child: CustomOpacityTransition(
-              visible: overlayVisible,
-              child: Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.black.withValues(alpha: 0.6),
-              ),
+        GestureDetector(
+          onTap: () => _query.video(context).showAndHideOverlay(),
+          behavior: HitTestBehavior.opaque,
+          child: CustomOpacityTransition(
+            visible: overlayVisible,
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.black.withValues(alpha: 0.6),
             ),
           ),
+        ),
 
         VideoCoreForwardAndRewindLayout(
           rewind: GestureDetector(onDoubleTap: _rewind),
@@ -662,113 +647,75 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             );
           },
         ),
-        if (scale)
-          VideoCoreOverlayControlMode(
-            showRewind: showAMomentRewindIcons[0],
-            showForward: showAMomentRewindIcons[1],
-            showSkipStartButton: showSkipStartButton,
-            showSkipEndButton: showSkipEndButton,
-            startButton: () {
-              controller.seekTo(metadata.opEnd);
-              setState(() {
-                showSkipStartButton = false;
-              });
-            },
-            endButton: () {
-              controller.seekTo(metadata.edEnd);
-              setState(() {
-                showSkipEndButton = false;
-              });
-            },
-            child: isFullScreen
-                ? SizedBox(
-                    height: 14,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
-                        children: [
-                          const Spacer(),
-                          buildTimeNow(),
-                          const Spacer(),
-                          buildPower(),
-                        ],
-                      ),
+        VideoCoreOverlay(
+          showRewind: showAMomentRewindIcons[0],
+          showForward: showAMomentRewindIcons[1],
+          showSkipStartButton: showSkipStartButton,
+          showSkipEndButton: showSkipEndButton,
+          startButton: () {
+            controller.seekTo(metadata.opEnd);
+            setState(() {
+              showSkipStartButton = false;
+            });
+          },
+          endButton: () {
+            controller.seekTo(metadata.edEnd);
+            setState(() {
+              showSkipEndButton = false;
+            });
+          },
+          child: isFullScreen
+              ? SizedBox(
+                  height: 14,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        buildTimeNow(),
+                        const Spacer(),
+                        buildPower(),
+                      ],
                     ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        if (!scale)
-          VideoCoreOverlay(
-            showRewind: showAMomentRewindIcons[0],
-            showForward: showAMomentRewindIcons[1],
-            showSkipStartButton: showSkipStartButton,
-            showSkipEndButton: showSkipEndButton,
-            startButton: () {
-              controller.seekTo(metadata.opEnd);
-              setState(() {
-                showSkipStartButton = false;
-              });
-            },
-            endButton: () {
-              controller.seekTo(metadata.edEnd);
-              setState(() {
-                showSkipEndButton = false;
-              });
-            },
-            child: isFullScreen
-                ? SizedBox(
-                    height: 14,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
-                        children: [
-                          const Spacer(),
-                          buildTimeNow(),
-                          const Spacer(),
-                          buildPower(),
-                        ],
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
 
-        if (!scale)
-          if (metadata.lock)
-            CustomOpacityTransition(
-              visible: controller.isShowingOverlay,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SplashCircularIcon(
-                  padding: EdgeInsets.only(
-                    left: isFullScreen ? 80 : 20,
+        if (metadata.lock)
+          CustomOpacityTransition(
+            visible: controller.isShowingOverlay,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SplashCircularIcon(
+                padding: EdgeInsets.only(
+                  left: isFullScreen ? 80 : 20,
+                ),
+                onTap: () => controller.openLock(),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withValues(alpha: 0.3),
+                    // borderRadius: BorderRadius.circular(7),
                   ),
-                  onTap: () => controller.openLock(),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withValues(alpha: 0.3),
-                      // borderRadius: BorderRadius.circular(7),
-                    ),
-                    child:
-                        controller.isLock ? style.lock.locked : style.lock.lock,
-                  ),
+                  child:
+                      controller.isLock ? style.lock.locked : style.lock.lock,
                 ),
               ),
             ),
-
-        if (!scale)
-          Align(
-            alignment: Alignment.topCenter,
-            child: buildLongPressSpeedToast(),
           ),
 
-        if (!scale) volumeBrightnessToast(),
+        Align(
+          alignment: Alignment.topCenter,
+          child: buildLongPressSpeedToast(),
+        ),
+
+        volumeBrightnessToast(),
         const VideoCoreThumbnail(),
 
-        if (!scale) const VideoCoreAdViewer(),
+        const VideoCoreAdViewer(),
       ],
     );
   }
@@ -1024,7 +971,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             '$batteryLevel%',
             style: const TextStyle(color: Colors.white, fontSize: 10),
           ),
-          const Icon(Iconsax.battery_charging, color: Colors.green, size: 16),
+          Icon(PhosphorIcons.batteryCharging(), color: Colors.green, size: 16),
         ],
       );
     } else {
@@ -1034,48 +981,19 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             '$batteryLevel%',
             style: const TextStyle(color: Colors.white, fontSize: 10),
           ),
-          if (batteryLevel < 14)
-            const Icon(
-              Icons.battery_1_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else if (batteryLevel < 28)
-            const Icon(
-              Icons.battery_2_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else if (batteryLevel < 42)
-            const Icon(
-              Icons.battery_3_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else if (batteryLevel < 56)
-            const Icon(
-              Icons.battery_4_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else if (batteryLevel < 70)
-            const Icon(
-              Icons.battery_5_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else if (batteryLevel < 84)
-            const Icon(
-              Icons.battery_6_bar_rounded,
-              color: Colors.white,
-              size: 16,
-            )
-          else
-            const Icon(
-              Icons.battery_full_rounded,
-              color: Colors.white,
-              size: 16,
-            ),
+          Icon(
+            batteryLevel <= 14
+                ? PhosphorIcons.batteryEmpty()
+                : batteryLevel <= 34
+                    ? PhosphorIcons.batteryLow()
+                    : batteryLevel <= 54
+                        ? PhosphorIcons.batteryMedium()
+                        : batteryLevel <= 79
+                            ? PhosphorIcons.batteryHigh()
+                            : PhosphorIcons.batteryFull(),
+            color: Colors.white,
+            size: 16,
+          ),
         ],
       );
     }

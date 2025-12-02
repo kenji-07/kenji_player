@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -70,7 +70,7 @@ class CustomText extends StatelessWidget {
                     ),
             ),
             if (selected)
-              const Icon(Iconsax.sound_copy, size: 20, color: Colors.red),
+              Icon(PhosphorIcons.waveform(), size: 20, color: Colors.red),
           ]),
     );
   }

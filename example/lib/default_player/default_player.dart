@@ -48,7 +48,7 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: KenjiPlayer(
-        seekTo: const Duration(milliseconds: 0),
+        seekTo: const Duration(milliseconds: 100000),
         opStart: const Duration(seconds: 1),
         opEnd: const Duration(seconds: 10),
         edStart: const Duration(seconds: 15),
@@ -56,7 +56,6 @@ class DefaultVideoPlayerState extends State<DefaultVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: false,
         enableFullscreenScale: true,
         brightness: true,
         volume: true,

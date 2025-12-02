@@ -56,7 +56,6 @@ class VastADVideoPlayerState extends State<VastADVideoPlayer>
         key: _playerKey,
         controller: _controller,
         lock: true,
-        control: false,
         brightness: true,
         volume: true,
         autoPlay: true,

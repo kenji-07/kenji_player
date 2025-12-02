@@ -246,16 +246,21 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> initialize(
     Map<String, VideoSource> sources, {
     bool autoPlay = true,
+    Duration? seekTo,
   }) async {
     WidgetsBinding.instance.addObserver(this);
     final MapEntry<String, VideoSource> entry = sources.entries.first;
     _mounted = true;
     _source = sources;
+
     await changeSource(
       name: entry.key,
       source: entry.value,
       autoPlay: autoPlay,
     );
+    if (seekTo != null) {
+      await _video?.seekTo(seekTo);
+    }
     // Load the stored aspect ratio when the controller is initialized
     _loadPlayerSettingsFromStorage();
     print("VIDEO PLAYER INITIALIZED");

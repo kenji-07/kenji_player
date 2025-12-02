@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 
 Widget defaultFVolumeToast(double value, Stream<double> emitter) {
@@ -50,11 +50,13 @@ class _FSliderToastState extends State<_FSliderToast> {
     IconData iconData;
     final type = widget.type;
     if (value <= 0) {
-      iconData = type == 0 ? Iconsax.volume_slash_copy : Iconsax.moon_copy;
+      iconData =
+          type == 0 ? PhosphorIcons.speakerSimpleX() : PhosphorIcons.moon();
     } else if (value < 0.5) {
-      iconData = type == 0 ? Iconsax.volume_low_copy : Icons.brightness_medium;
+      iconData =
+          type == 0 ? PhosphorIcons.speakerLow() : PhosphorIcons.sunHorizon();
     } else {
-      iconData = type == 0 ? Iconsax.volume_high_copy : Iconsax.sun_1_copy;
+      iconData = type == 0 ? PhosphorIcons.speakerHigh() : PhosphorIcons.sun();
     }
 
     return Align(

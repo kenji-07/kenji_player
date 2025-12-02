@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:kenji_player/src/domain/entities/styles/bar.dart';
 
@@ -14,10 +14,11 @@ class ProgressBarStyle {
   })  : bar = bar ?? BarStyle.progress(),
         backgroundColor = backgroundColor ?? Colors.black.withValues(alpha: .8),
         fullScreen = fullScreen ??
-            const Icon(Iconsax.maximize_21_copy, color: Colors.white, size: 20),
+            Icon(PhosphorIcons.arrowsOutSimple(),
+                color: Colors.white, size: 20),
         fullScreenExit = fullScreenExit ??
-            const Icon(
-              Iconsax.maximize_4_copy,
+            Icon(
+              PhosphorIcons.cornersOut(),
               color: Colors.white,
               size: 20,
             );

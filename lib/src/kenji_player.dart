@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:kenji_player/src/domain/bloc/controller.dart';
 import 'package:kenji_player/src/domain/bloc/metadata.dart';
@@ -28,7 +28,6 @@ class KenjiPlayer extends StatefulWidget {
     this.defaultAspectRatio = 16 / 9,
     this.rewindAmount = -10,
     this.forwardAmount = 10,
-    this.control = true,
     this.enableFullscreenScale = true,
     this.volume = false,
     this.brightness = false,
@@ -76,7 +75,6 @@ class KenjiPlayer extends StatefulWidget {
   ///If it is `true`, when entering the fullscreen it will be fixed
   ///in landscape mode and it will not be possible to rotate it in portrait.
   ///If it is `false`, you can rotate the entire screen in any position.
-  final bool control;
 
   /// Controls a platform video PLAYER, and provides updates when the state is
   /// changing.
@@ -144,7 +142,8 @@ class KenjiPlayerState extends State<KenjiPlayer> {
       await _controller.setAdLoadingState(false);
     }
 
-    await _controller.initialize(widget.source, autoPlay: widget.autoPlay);
+    await _controller.initialize(widget.source,
+        autoPlay: widget.autoPlay, seekTo: widget.seekTo);
 
     if (hasAdTagUrl) {
       _controller.video?.addListener(() {
@@ -171,7 +170,6 @@ class KenjiPlayerState extends State<KenjiPlayer> {
                   rewindAmount: widget.rewindAmount,
                   forwardAmount: widget.forwardAmount,
                   defaultAspectRatio: widget.defaultAspectRatio,
-                  control: widget.control,
                   enableFullscreenScale: widget.enableFullscreenScale,
                   volume: widget.volume,
                   brightness: widget.brightness,
@@ -200,7 +198,7 @@ class KenjiPlayerState extends State<KenjiPlayer> {
                   left: 20,
                   child: InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Iconsax.arrow_left_2_copy),
+                    child: Icon(PhosphorIcons.caretLeft()),
                   ),
                 ),
                 Center(
