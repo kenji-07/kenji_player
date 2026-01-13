@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
+
+enum CenterPlayAndPauseType { center, bottom }
+
+class CenterPlayAndPause extends StatelessWidget {
+  const CenterPlayAndPause({
+    super.key,
+    required this.type,
+    required this.showRewind,
+    required this.showForward,
+    this.padding,
+  });
+
+  final bool showRewind;
+  final bool showForward;
+  final CenterPlayAndPauseType type;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final VideoQuery query = VideoQuery();
+    final controller = query.video(context, listen: true);
+    final style = query.videoMetadata(context).style.centerPlayAndPauseStyle;
+    final bool isPlaying = !controller.isPlaying;
+    final loading = query.videoStyle(context);
+
+    if (controller.isChangingSource || controller.isBuffering) {
+      return Container(
+        width: loading.centerPlayAndPauseStyle.circleRadius,
+        height: loading.centerPlayAndPauseStyle.circleRadius,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: loading.centerPlayAndPauseStyle.background,
+        ),
+        child: SplashCircularIcon(
+          onTap: () {},
+          padding: padding,
+          child: loading.loading,
+        ),
+      );
+    }
+
+    Widget childWidget;
+    if (showRewind) {
+      childWidget = style.rewindWidget;
+    } else if (showForward) {
+      childWidget = style.forwardWidget;
+    } else if (type == CenterPlayAndPauseType.bottom) {
+      childWidget = isPlaying ? style.play : style.pause;
+    } else {
+      childWidget = controller.position >= controller.duration
+          ? style.replayWidget
+          : isPlaying
+              ? style.playWidget
+              : style.pauseWidget;
+    }
+
+    return SplashCircularIcon(
+      onTap: controller.playOrPause,
+      padding: padding,
+      child: childWidget,
+    );
+  }
+}

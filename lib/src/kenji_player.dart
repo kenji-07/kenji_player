@@ -1,0 +1,222 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import 'package:kenji_player/src/domain/bloc/controller.dart';
+import 'package:kenji_player/src/domain/bloc/metadata.dart';
+import 'package:kenji_player/src/domain/entities/styles/kenji_player.dart';
+import 'package:kenji_player/src/domain/entities/video_source.dart';
+import 'package:kenji_player/src/ui/video_core/video_core.dart';
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
+
+export 'package:video_player/video_player.dart';
+export 'package:kenji_player/src/domain/bloc/controller.dart';
+export 'package:kenji_player/src/domain/entities/ads.dart';
+export 'package:kenji_player/src/domain/entities/styles/kenji_player.dart';
+export 'package:kenji_player/src/domain/entities/subtitle.dart';
+export 'package:kenji_player/src/domain/entities/video_source.dart';
+
+class KenjiPlayer extends StatefulWidget {
+  const KenjiPlayer({
+    super.key,
+    required this.source,
+    this.style,
+    this.controller,
+    required this.seekTo,
+    this.looping = false,
+    this.autoPlay = false,
+    this.defaultAspectRatio = 16 / 9,
+    this.rewindAmount = -10,
+    this.forwardAmount = 10,
+    this.enableFullscreenScale = true,
+    this.volume = false,
+    this.brightness = false,
+    this.lock = true,
+    this.caption = true,
+    this.aspect = BoxFit.cover,
+    this.imaAdTagUrl,
+    required this.opStart,
+    required this.opEnd,
+    required this.edStart,
+    required this.edEnd,
+  });
+
+  final Duration seekTo;
+
+  final String? imaAdTagUrl;
+
+  /// OP Start, OP End & END Start, END End
+  final Duration opStart;
+  final Duration opEnd;
+  final Duration edStart;
+  final Duration edEnd;
+
+  /// Once the video is initialized, it will be played
+  final bool autoPlay;
+
+  ///Sets whether or not the video should loop after playing once.
+  final bool looping;
+
+  /// It is an argument where you can change the design of almost the entire KenjiPlayer
+  final KenjiPlayerStyle? style;
+
+  /// It is the Aspect Ratio that the widget.style.loading will take when the video
+  /// is not initialized yet
+  final double defaultAspectRatio;
+
+  /// It is the amount of seconds that the video will be delayed when double tapping.
+  final int rewindAmount;
+
+  /// It is the amount of seconds that the video will be advanced when double tapping.
+  final int forwardAmount;
+
+  final Map<String, VideoSource> source;
+
+  ///If it is `true`, when entering the fullscreen it will be fixed
+  ///in landscape mode and it will not be possible to rotate it in portrait.
+  ///If it is `false`, you can rotate the entire screen in any position.
+
+  /// Controls a platform video PLAYER, and provides updates when the state is
+  /// changing.
+  ///
+  /// Instances must be initialized with initialize.
+  ///...
+  /// The video is displayed in a Flutter app by creating a [VideoPlayer] widget.
+  ///
+  /// To reclaim the resources used by the player call [dispose].
+  ///
+  /// After [dispose] all further calls are ignored.
+  final KenjiPlayerController? controller;
+
+  ///When the video is fullscreen and landscape mode, It's able to scale itself until the screen boundaries
+  final bool enableFullscreenScale;
+
+  ///On VerticalSwapingGesture the video is able to control the **video volume** or **device volume**.
+  final bool volume;
+
+  ///On HorizontalSwapingGesture the video is able to control the forward and rewind of itself
+  final bool brightness;
+
+  /// this class helps you to hide some player lock button
+  final bool lock;
+
+  /// this class helps you to hide some player  Caption
+  final bool caption;
+
+  final BoxFit aspect;
+
+  @override
+  KenjiPlayerState createState() => KenjiPlayerState();
+}
+
+class KenjiPlayerState extends State<KenjiPlayer> {
+  late KenjiPlayerController _controller;
+  late KenjiPlayerStyle _style;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    _controller = widget.controller ?? KenjiPlayerController();
+    _style = widget.style ?? KenjiPlayerStyle();
+    _initKenjiPlayer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _initKenjiPlayer() async {
+    _controller.looping = widget.looping;
+    _controller.isShowingThumbnail = _style.thumbnail != null;
+
+    final bool hasAdTagUrl =
+        widget.imaAdTagUrl != null && widget.imaAdTagUrl!.isNotEmpty;
+
+    if (hasAdTagUrl) {
+      _controller.setImaAdTagUrl(widget.imaAdTagUrl!);
+      await _controller.setAdLoadingState(true);
+    } else {
+      await _controller.setAdLoadingState(false);
+    }
+
+    await _controller.initialize(widget.source,
+        autoPlay: widget.autoPlay, seekTo: widget.seekTo);
+
+    if (hasAdTagUrl) {
+      _controller.video?.addListener(() {
+        if (_controller.video!.value.isCompleted) {
+          _controller.adsLoader?.contentComplete();
+        }
+      });
+    }
+
+    if (!mounted) return;
+    setState(() => _initialized = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget? thumbnail = _style.thumbnail;
+    return _initialized
+        ? MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: _controller),
+              Provider(
+                create: (_) => KenjiPlayerMetadata(
+                  style: _style,
+                  rewindAmount: widget.rewindAmount,
+                  forwardAmount: widget.forwardAmount,
+                  defaultAspectRatio: widget.defaultAspectRatio,
+                  enableFullscreenScale: widget.enableFullscreenScale,
+                  volume: widget.volume,
+                  brightness: widget.brightness,
+                  lock: widget.lock,
+                  caption: widget.caption,
+                  aspect: widget.aspect,
+                  opStart: widget.opStart,
+                  opEnd: widget.opEnd,
+                  edStart: widget.edStart,
+                  edEnd: widget.edEnd,
+                ),
+              ),
+            ],
+            builder: (context, child) {
+              _controller.context = context;
+              return const KenjiPlayerCore();
+            },
+          )
+        : AspectRatio(
+            aspectRatio: widget.defaultAspectRatio,
+            child: Stack(
+              children: [
+                if (thumbnail != null) Positioned.fill(child: thumbnail),
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(PhosphorIcons.caretLeft()),
+                  ),
+                ),
+                Center(
+                    child: Container(
+                  width: _style.centerPlayAndPauseStyle.circleRadius,
+                  height: _style.centerPlayAndPauseStyle.circleRadius,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _style.centerPlayAndPauseStyle.background,
+                  ),
+                  child: SplashCircularIcon(
+                    onTap: () {},
+                    // padding: padding,
+                    child: _style.loading,
+                  ),
+                )),
+              ],
+            ),
+          );
+  }
+}
