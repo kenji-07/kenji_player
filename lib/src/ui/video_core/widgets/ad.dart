@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+
+import 'package:kenji_player/src/ui/widgets/helpers.dart';
+import 'package:kenji_player/src/data/repositories/video.dart';
+import 'package:kenji_player/src/ui/widgets/transitions.dart';
+
+class VideoCoreAdViewer extends StatelessWidget {
+  const VideoCoreAdViewer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final query = VideoQuery();
+    final style = query.videoStyle(context);
+    final video = query.video(context, listen: true);
+
+    return CustomOpacityTransition(
+      visible: video.activeAd != null,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: video.activeAd?.child,
+          ),
+          if (video.activeAd != null)
+            Positioned(
+              right: 20,
+              bottom: 20,
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  onTap: (video.adTimeWatched ?? Duration.zero) >=
+                          video.activeAd!.durationToSkip
+                      ? video.skipAd
+                      : null,
+                  child: Builder(
+                    builder: (_) {
+                      final int remaing = (video.activeAd!.durationToSkip -
+                              (video.adTimeWatched ?? Duration.zero))
+                          .inSeconds;
+                      return style.skipAdBuilder?.call(video.adTimeWatched!) ??
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.7),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Text(
+                              remaing > 0
+                                  ? "$remaing seconds remaining"
+                                  : "Skip ad",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          Positioned(
+            right: 20,
+            top: 20,
+            child: InkWell(
+              onTap: () => Utils.launchURL(video.activeAd!.deepLink),
+              child: const Text(
+                "Learn More",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
