@@ -140,46 +140,60 @@ class KenjiPlayerState extends State<KenjiPlayer> {
 
     if (_initError != null) {
       return AspectRatio(
-        aspectRatio: widget.defaultAspectRatio,
-        child: Container(
-          color: Colors.black,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline,
-                    color: Colors.white70, size: 48),
-                const SizedBox(height: 12),
-                const Text(
-                  'Failed to load the video',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+          aspectRatio: widget.defaultAspectRatio,
+          child: Stack(
+            children: [
+              Container(
+                color: Colors.black,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.error_outline,
+                              color: Colors.white70, size: 48),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Failed to load the video',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _initError!,
+                            style: const TextStyle(
+                                color: Colors.white54, fontSize: 11),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white24,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() => _initError = null);
+                              _initKenjiPlayer();
+                            },
+                            icon: const Icon(Icons.refresh, size: 18),
+                            label: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+              Positioned(
+                top: 20,
+                left: 20,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(PhosphorIcons.caretLeft()),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  _initError!,
-                  style: const TextStyle(color: Colors.white54, fontSize: 11),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white24,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    setState(() => _initError = null);
-                    _initKenjiPlayer();
-                  },
-                  icon: const Icon(Icons.refresh, size: 18),
-                  label: const Text('Retry'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+              ),
+            ],
+          ));
     }
 
     return _initialized

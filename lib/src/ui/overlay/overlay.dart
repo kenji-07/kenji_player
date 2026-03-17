@@ -17,6 +17,7 @@ class VideoCoreOverlay extends StatelessWidget {
   final bool showSkipEndButton;
   final VoidCallback startButton;
   final VoidCallback endButton;
+  final VoidCallback showAndHideOverlay;
   const VideoCoreOverlay({
     super.key,
     required this.child,
@@ -26,6 +27,7 @@ class VideoCoreOverlay extends StatelessWidget {
     required this.showSkipEndButton,
     required this.startButton,
     required this.endButton,
+    required this.showAndHideOverlay,
   });
 
   @override
@@ -124,7 +126,6 @@ class VideoCoreOverlay extends StatelessWidget {
                 ),
               ),
             ),
-         
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -187,10 +188,13 @@ class VideoCoreOverlay extends StatelessWidget {
             // widthFactor: widthFactor,
             // heightFactor: heightFactor,
             child: CustomSwipeTransition(
-              visible: overlayVisible,
-              axisAlignment: -1.0,
-              child: const OverlayBottom(),
-            ),
+                visible: overlayVisible,
+                axisAlignment: -1.0,
+                child: GestureDetector(
+                  onTap: showAndHideOverlay,
+                  behavior: HitTestBehavior.opaque,
+                  child: const OverlayBottom(),
+                )),
           ),
           AnimatedBuilder(
             animation: controller,
@@ -211,40 +215,4 @@ class VideoCoreOverlay extends StatelessWidget {
       ),
     );
   }
-
-  void showQualitySelector(
-  BuildContext context,
-  // String currentQuality,
-  // Function(String) onSelect,
-) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: 'quality_selector',
-    barrierColor: Colors.black54, // ард харанхуй болох
-    transitionDuration: Duration(milliseconds: 300),
-    pageBuilder: (_, __, ___) {
-      return Align(
-        alignment: Alignment.centerRight, // баруун тал
-        child: Material(
-          color: Colors.transparent,
-          child: Text("asbjhbask"),
-        ),
-      );
-    },
-    transitionBuilder: (_, anim, __, child) {
-      return SlideTransition(
-        position: Tween<Offset>(
-          begin: Offset(1, 0), // баруунаас орж ирнэ
-          end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: anim,
-          curve: Curves.easeOut,
-        )),
-        child: child,
-      );
-    },
-  );
-}
-
 }

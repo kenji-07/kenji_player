@@ -1,4 +1,12 @@
 # Changelog
+## [1.1.3] - 2026-03-17
+
+### Fixed
+
+- Fixed an issue with showAndHideOverlay
+
+---
+
 ## [1.1.2] - 2026-03-16
 
 ### Added

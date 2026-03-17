@@ -29,6 +29,7 @@ import 'package:kenji_player/src/ui/settings_menu/widgets/aspect_menu.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/caption_menu.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/quality_menu.dart';
 import 'package:kenji_player/src/ui/settings_menu/widgets/episode_menu.dart';
+import 'package:kenji_player/src/ui/overlay/widgets/bottom.dart';
 
 const Color _kSkipButtonColor = Color.fromRGBO(0, 202, 19, 1.0);
 const Color _kPanelBgColor = Color.fromRGBO(16, 17, 18, 1.0);
@@ -369,38 +370,70 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
 
   Widget _buildErrorWidget(
       KenjiPlayerController controller, bool isFullScreen) {
-    final Widget content = Container(
-      color: Colors.black,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    final Widget content = GestureDetector(
+        onTap: () {
+          _query.video(context).showAndHideOverlay();
+        },
+        child: Stack(
           children: [
-            const Icon(Icons.error_outline, color: Colors.white70, size: 48),
-            const SizedBox(height: 12),
-            const Text('Failed to load the video',
-                style: TextStyle(color: Colors.white, fontSize: 14)),
-            const SizedBox(height: 6),
-            Text(
-              controller.errorState?.message ?? '',
-              style: const TextStyle(color: Colors.white54, fontSize: 11),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            Container(
+              color: Colors.black,
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.white70, size: 48),
+                        const SizedBox(height: 12),
+                        const Text('Failed to load the video',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14)),
+                        const SizedBox(height: 6),
+                        Text(
+                          controller.errorState?.message ?? '',
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 11),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white24,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () => controller.retryCurrentSource(),
+                          icon: const Icon(Icons.refresh, size: 18),
+                          label: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  )),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white24,
-                foregroundColor: Colors.white,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: CustomSwipeTransition(
+                visible: controller.isShowingOverlay,
+                axisAlignment: -1.0,
+                child: const OverlayBottom(),
               ),
-              onPressed: () => controller.retryCurrentSource(),
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Retry'),
+            ),
+            Positioned(
+              top: 20,
+              left: 20,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  PhosphorIcons.caretLeft(),
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
-        ),
-      ),
-    );
+        ));
     return isFullScreen ? content : VideoCoreAspectRadio(child: content);
   }
 
@@ -516,6 +549,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
             setState(() => _showSkipEndButton = false);
           },
           child: isFullScreen ? _statusBar() : const SizedBox.shrink(),
+          showAndHideOverlay: () => _query.video(context).showAndHideOverlay(),
         ),
         if (metadata.lock)
           CustomOpacityTransition(
@@ -712,46 +746,44 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
     );
   }
 
- Widget rightPositioned(bool visible, Widget child) {
-  final metadata = _query.videoMetadata(context);
-  final options = metadata.options;
-  final bool useBlur = options.blur ?? false;
+  Widget rightPositioned(bool visible, Widget child) {
+    final metadata = _query.videoMetadata(context);
+    final options = metadata.options;
+    final bool useBlur = options.blur ?? false;
 
-  Widget container = Container(
-    width: options.width,
-    height: options.height,
-    margin: EdgeInsets.only(right: options.right!),
-    decoration: BoxDecoration(
-      color: useBlur
-          ? _kPanelBgColor.withValues(alpha: 0.6)
-          : _kPanelBgColor,
-      borderRadius: options.effectiveBorderRadius,
-    ),
-    child: child,
-  );
+    Widget container = Container(
+      width: options.width,
+      height: options.height,
+      margin: EdgeInsets.only(right: options.right!),
+      decoration: BoxDecoration(
+        color: useBlur ? _kPanelBgColor.withValues(alpha: 0.6) : _kPanelBgColor,
+        borderRadius: options.effectiveBorderRadius,
+      ),
+      child: child,
+    );
 
-  if (useBlur) {
-    container = ClipRRect(
-      borderRadius: options.effectiveBorderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: container,
+    if (useBlur) {
+      container = ClipRRect(
+        borderRadius: options.effectiveBorderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: container,
+        ),
+      );
+    }
+
+    return Positioned(
+      right: 0,
+      top: 0,
+      bottom: 0,
+      child: CustomSwipeTransition(
+        visible: visible,
+        axis: Axis.horizontal,
+        axisAlignment: 1.0,
+        child: Center(child: container),
       ),
     );
   }
-
-  return Positioned(
-    right: 0,
-    top: 0,
-    bottom: 0,
-    child: CustomSwipeTransition(
-      visible: visible,
-      axis: Axis.horizontal,
-      axisAlignment: 1.0,
-      child: Center(child: container),
-    ),
-  );
-}
 
   Widget _volumeBrightnessToast() {
     final double? volume = _volume;

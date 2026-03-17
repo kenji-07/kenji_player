@@ -76,7 +76,7 @@ class ReelPlayerState extends State<ReelPlayer> with WidgetsBindingObserver {
           {
             for (var i = 0; i < Environment.resolutionsUrls.length; i++)
               Environment.resolutionsUrls[i].quality:
-                  Environment.resolutionsUrls[i].qualityUrl,
+                  'Environment.resolutionsUrls[i].qualityUrl',
           },
           httpHeaders: customHeaders,
           initialSubtitle: 'English',

@@ -41,7 +41,7 @@ class VideoCoreAdViewer extends StatelessWidget {
                       return style.skipAdBuilder?.call(video.adTimeWatched!) ??
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
+                                vertical: 10, horizontal: 10),
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(7),
