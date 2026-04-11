@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.5] - 2026-04-11
+
+### Fixed
+- Play/pause icon not hiding with overlay during live streams
+
 ## [1.1.4] - 2026-04-11
 
 ### Added

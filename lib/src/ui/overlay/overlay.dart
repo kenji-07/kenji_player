@@ -84,15 +84,16 @@ class VideoCoreOverlay extends StatelessWidget {
                                 ),
 
                                 /// Speed
-                                SplashCircularIcon(
-                                  padding: halfPadding,
-                                  onTap: () => controller.speed(),
-                                  child: Icon(
-                                    PhosphorIcons.gauge(),
-                                    color: Colors.white,
-                                    size: 20,
+                                if (!controller.isLive)
+                                  SplashCircularIcon(
+                                    padding: halfPadding,
+                                    onTap: () => controller.speed(),
+                                    child: Icon(
+                                      PhosphorIcons.gauge(),
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
-                                ),
 
                                 /// CC Caption
                                 if (caption)
@@ -126,63 +127,64 @@ class VideoCoreOverlay extends StatelessWidget {
                 ),
               ),
             ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: isFullscreen ? 30 : 10,
-                  right: isFullscreen ? 30 : 10,
-                  bottom: 100),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CustomOpacityTransition(
-                      visible: showSkipStartButton,
-                      child: GestureDetector(
-                          onTap: startButton,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: isFullscreen ? 16 : 10,
-                                vertical: isFullscreen ? 10 : 5),
-                            decoration: BoxDecoration(
-                              color: Color.fromRGBO(0, 202, 19, 1.0),
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: Text(
-                              "Skip OP",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: isFullscreen ? 16 : 11,
-                                fontWeight: FontWeight.w600,
+          if (!controller.isLive)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: isFullscreen ? 30 : 10,
+                    right: isFullscreen ? 30 : 10,
+                    bottom: 100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomOpacityTransition(
+                        visible: showSkipStartButton,
+                        child: GestureDetector(
+                            onTap: startButton,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: isFullscreen ? 16 : 10,
+                                  vertical: isFullscreen ? 10 : 5),
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(0, 202, 19, 1.0),
+                                borderRadius: BorderRadius.circular(7),
                               ),
-                            ),
-                          ))),
-                  CustomOpacityTransition(
-                      visible: showSkipEndButton,
-                      child: GestureDetector(
-                          onTap: endButton,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: isFullscreen ? 16 : 10,
-                                vertical: isFullscreen ? 10 : 5),
-                            decoration: BoxDecoration(
-                              color: Color.fromRGBO(0, 202, 19, 1.0),
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: Text(
-                              "Skip END",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: isFullscreen ? 16 : 11,
-                                fontWeight: FontWeight.w600,
+                              child: Text(
+                                "Skip OP",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isFullscreen ? 16 : 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                          ))),
-                ],
+                            ))),
+                    CustomOpacityTransition(
+                        visible: showSkipEndButton,
+                        child: GestureDetector(
+                            onTap: endButton,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: isFullscreen ? 16 : 10,
+                                  vertical: isFullscreen ? 10 : 5),
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(0, 202, 19, 1.0),
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              child: Text(
+                                "Skip END",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isFullscreen ? 16 : 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ))),
+                  ],
+                ),
               ),
             ),
-          ),
           Align(
             alignment: Alignment.bottomCenter,
             // widthFactor: widthFactor,

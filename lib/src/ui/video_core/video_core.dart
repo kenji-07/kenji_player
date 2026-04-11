@@ -522,7 +522,9 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
         Builder(builder: (_) {
           final c = _query.video(context, listen: true);
           return CustomOpacityTransition(
-            visible: (c.position >= c.duration && !c.isShowingOverlay) ||
+            visible: (!c.isLive &&
+                    c.position >= c.duration &&
+                    !c.isShowingOverlay) ||
                 _showRewindIcons[0] ||
                 _showRewindIcons[1] ||
                 c.isChangingSource ||
