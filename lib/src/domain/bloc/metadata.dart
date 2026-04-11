@@ -20,6 +20,7 @@ class KenjiPlayerMetadata {
     required this.edStart,
     required this.edEnd,
     required this.options,
+    required this.isLive,
   });
 
   /// OP Start, OP End & END Start, END End
@@ -27,6 +28,8 @@ class KenjiPlayerMetadata {
   final Duration opEnd;
   final Duration edStart;
   final Duration edEnd;
+
+  final bool isLive;
 
   /// It is the Aspect Ratio that the widget.style.loading will take when the video
   /// is not initialized yet

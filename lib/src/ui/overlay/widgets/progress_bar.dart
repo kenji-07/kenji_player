@@ -39,6 +39,7 @@ class VideoProgressBarState extends State<VideoProgressBar> {
           final double width = constraints.maxWidth;
           final Duration position = controller.position;
           final Duration end = controller.duration;
+          final bool isLive = controller.isLive;
 
           return ValueListenableBuilder<Duration>(
             valueListenable: _draggingBuffer,
@@ -46,11 +47,11 @@ class VideoProgressBarState extends State<VideoProgressBar> {
               final Duration displayPos =
                   controller.isDraggingProgressBar ? dragged : position;
 
-              final double progressRatio = end.inMilliseconds > 0
+              final double progressRatio = (!isLive && end.inMilliseconds > 0)
                   ? (displayPos.inMilliseconds / end.inMilliseconds)
                       .clamp(0.0, 1.0)
                   : 0.0;
-              final double bufferRatio = end.inMilliseconds > 0
+              final double bufferRatio = (!isLive && end.inMilliseconds > 0)
                   ? (controller.maxBuffering.inMilliseconds /
                           end.inMilliseconds)
                       .clamp(0.0, 1.0)
@@ -67,7 +68,8 @@ class VideoProgressBarState extends State<VideoProgressBar> {
                     // Background track
                     ProgressBar(width: width, color: bar.background),
                     // Buffer track
-                    ProgressBar(width: bufferWidth, color: bar.secondBackground),
+                    ProgressBar(
+                        width: bufferWidth, color: bar.secondBackground),
                     // Progress track
                     ProgressBar(width: progressWidth, color: bar.color),
                     // Drag shadow dot
@@ -156,27 +158,38 @@ class ProgressBarGestureState extends State<ProgressBarGesture> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLive = _query.video(context, listen: true).isLive;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onHorizontalDragStart: (_) {
-        _startDragging();
-        _pause();
-      },
-      onHorizontalDragUpdate: (DragUpdateDetails d) {
-        _seekToRelativePosition(d.localPosition);
-      },
-      onHorizontalDragEnd: (_) {
-        _endDragging();
-      },
-      onTapDown: (TapDownDetails d) {
-        _startDragging();
-        _seekToRelativePosition(d.localPosition);
-        _pause();
-      },
-      onTapUp: (TapUpDetails d) {
-        _seekToRelativePosition(d.localPosition);
-        _endDragging();
-      },
+      onHorizontalDragStart: isLive
+          ? null
+          : (_) {
+              _startDragging();
+              _pause();
+            },
+      onHorizontalDragUpdate: isLive
+          ? null
+          : (DragUpdateDetails d) {
+              _seekToRelativePosition(d.localPosition);
+            },
+      onHorizontalDragEnd: isLive
+          ? null
+          : (_) {
+              _endDragging();
+            },
+      onTapDown: isLive
+          ? null
+          : (TapDownDetails d) {
+              _startDragging();
+              _seekToRelativePosition(d.localPosition);
+              _pause();
+            },
+      onTapUp: isLive
+          ? null
+          : (TapUpDetails d) {
+              _seekToRelativePosition(d.localPosition);
+              _endDragging();
+            },
       child: widget.child,
     );
   }

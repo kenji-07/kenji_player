@@ -6,6 +6,7 @@ import 'default_player/vast_ad_player.dart';
 import 'default_player/custom_ad_player.dart';
 import 'default_player/decrypt_player.dart';
 import 'default_player/reel_player.dart';
+import 'default_player/live_player.dart';
 
 void main() => runApp(const MyApp());
 
@@ -67,6 +68,15 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HlsPage()),
+              );
+            },
+          ),
+           ListTile(
+            title: const Text('Live Video Player'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LivePage()),
               );
             },
           ),
@@ -184,6 +194,34 @@ class HlsPage extends StatelessWidget {
     );
   }
 }
+
+class LivePage extends StatelessWidget {
+  const LivePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(246, 245, 250, 1),
+      appBar: AppBar(
+        title: const Text('Live Player'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 250,
+            child: const LiveVideoPlayer(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class FromNetworkPage extends StatelessWidget {
   const FromNetworkPage({Key? key}) : super(key: key);

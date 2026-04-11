@@ -2,7 +2,7 @@ name: kenji_player
 description: Kenji Video Player is a video player for flutter. The video_player plugin gives low level access for the video playback.
 homepage: https://github.com/kenji-07/kenji_player
 repository: https://github.com/kenji-07/kenji_player
-version: 1.1.3
+version: 1.1.4
 
 environment:
   sdk: ">=3.2.3 <4.0.0"
@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
   http: ^1.6.0
   video_player: ^2.11.1
-  wakelock_plus: ^1.4.0
-  volume_controller: ^3.4.2
+  wakelock_plus: ^1.5.1
+  volume_controller: ^3.4.4
   screen_brightness: ^2.1.7
   battery_plus: ^7.0.0
   provider: ^6.1.5+1
@@ -23,7 +23,7 @@ dependencies:
   url_launcher: ^6.3.2
   get_storage: ^2.1.1
   phosphor_flutter: ^2.1.0
-  interactive_media_ads: ^0.3.0+11
+  interactive_media_ads: ^0.3.0+14
   pointycastle: ^4.0.0
 
 dev_dependencies:

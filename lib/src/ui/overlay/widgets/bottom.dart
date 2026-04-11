@@ -41,11 +41,25 @@ class OverlayBottom extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  '${query.durationFormatter(controller.position)} / '
-                  '${query.durationFormatter(controller.duration)}',
-                  style: const TextStyle(fontSize: 12, color: Colors.white),
-                ),
+                controller.isLive
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text('LIVE',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold)),
+                      )
+                    : Text(
+                        '${query.durationFormatter(controller.position)} / ${query.durationFormatter(controller.duration)}',
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.white),
+                      ),
                 Row(
                   children: [
                     if (style.episode != null && !controller.isShowingEpisode)
@@ -71,12 +85,15 @@ class OverlayBottom extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: isFullscreen
-                ? EdgeInsets.only(bottom: padding, left: 25, right: 25)
-                : EdgeInsets.only(bottom: padding, left: 15, right: 15),
-            child: const VideoProgressBar(),
-          ),
+          if (!controller.isLive)
+            Padding(
+              padding: isFullscreen
+                  ? EdgeInsets.only(bottom: padding, left: 25, right: 25)
+                  : EdgeInsets.only(bottom: padding, left: 15, right: 15),
+              child: const VideoProgressBar(),
+            )
+          else
+            SizedBox(height: padding),
           if (isFullscreen) SizedBox(height: barStyle.bar.height),
         ],
       ),

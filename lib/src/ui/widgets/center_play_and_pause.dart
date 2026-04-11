@@ -51,7 +51,7 @@ class CenterPlayAndPause extends StatelessWidget {
     } else if (type == CenterPlayAndPauseType.bottom) {
       childWidget = playing ? style.pause : style.play;
     } else {
-      if (controller.position >= controller.duration) {
+      if (!controller.isLive && controller.position >= controller.duration) {
         childWidget = style.replayWidget;
       } else {
         childWidget = playing ? style.pauseWidget : style.playWidget;

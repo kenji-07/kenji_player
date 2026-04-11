@@ -1,4 +1,20 @@
 # Changelog
+
+## [1.1.4] - 2026-04-11
+
+### Added
+- Live stream support (HLS)
+- `isLive` auto-detection based on video duration
+- LIVE badge in overlay bottom bar
+
+### Fixed
+- Replay icon incorrectly shown during live streams
+- Progress bar gestures (seek/drag) disabled for live streams
+- Rewind/forward seek disabled for live streams
+- Overlay auto-close logic fixed for live streams
+- Adaptive bitrate monitor skipped for live streams
+- Division by zero prevented when duration is zero
+
 ## [1.1.3] - 2026-03-17
 
 ### Fixed

@@ -276,6 +276,7 @@ class KenjiPlayerCoreState extends State<KenjiPlayerCore> {
 
   Future<void> _seekBySeconds(int seconds) async {
     final controller = _query.video(context);
+    if (controller.isLive) return;
     final int pos = controller.video!.value.position.inSeconds;
     await controller.seekTo(Duration(seconds: pos + seconds));
     await controller.play();

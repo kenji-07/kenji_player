@@ -133,8 +133,26 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
 
   Duration _duration = Duration.zero;
 
+  bool get isLive {
+    if (_explicitIsLive != null) return _explicitIsLive!;
+    if (_video == null || !_video!.value.isInitialized) return false;
+    final dur = _video!.value.duration;
+    return dur == Duration.zero || dur.inHours >= 24;
+  }
+
+  bool? _explicitIsLive;
+
+  void setIsLive(bool value) {
+    _explicitIsLive = value;
+    notifyListeners();
+  }
+
   bool get mounted => _mounted;
-  Duration get duration => _duration;
+  Duration get duration {
+    if (isLive) return Duration.zero;
+    return _duration;
+  }
+
   VideoSource? get activeSource => _source?[_activeSourceName];
   KenjiPlayerAd? get activeAd => _activeAd;
   Duration? get adTimeWatched => _adTimeWatched;
@@ -241,7 +259,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
       autoPlay: autoPlay,
     );
 
-    if (seekTo != null) await _video?.seekTo(seekTo);
+    if (seekTo != null && !isLive) await _video?.seekTo(seekTo);
     _loadPlayerSettingsFromStorage();
     debugPrint('VIDEO PLAYER INITIALIZED');
   }
@@ -500,6 +518,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void _checkAndAdaptQuality() {
+    if (isLive) return;
     if (_source == null || _source!.length <= 1) return;
     if (_video == null || !_video!.value.isInitialized) return;
 
@@ -571,11 +590,16 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _seekToBeginIfEnded() async {
+    if (isLive) return;
     if (position >= duration) await seekTo(beginRange);
   }
 
   Future<void> seekTo(Duration pos) async {
     if (_isChangingSource) return;
+    if (isLive) {
+      await _video?.seekTo(pos);
+      return;
+    }
     final Duration clampedPos = pos.clamp(beginRange, endRange);
     await _video?.seekTo(clampedPos);
   }
@@ -588,7 +612,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
     final Duration dur = value.duration;
     final Tween<Duration>? range = activeSource?.range;
 
-    if (range != null) {
+    if (range != null && !isLive) {
       if (pos < beginRange || pos >= endRange) {
         if (looping) {
           _video?.seekTo(beginRange);
@@ -619,7 +643,7 @@ class KenjiPlayerController extends ChangeNotifier with WidgetsBindingObserver {
 
     if (_isShowingOverlay) {
       if (isPlaying) {
-        if (pos >= dur && looping) {
+        if (!isLive && pos >= dur && looping) {
           seekTo(Duration.zero);
         } else if (_closeOverlayButtons == null) {
           _startCloseOverlay();

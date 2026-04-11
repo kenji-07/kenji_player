@@ -37,6 +37,7 @@ class KenjiPlayer extends StatefulWidget {
     this.caption = true,
     this.aspect = BoxFit.cover,
     this.imaAdTagUrl,
+    this.isLive = false,
     required this.opStart,
     required this.opEnd,
     required this.edStart,
@@ -64,6 +65,7 @@ class KenjiPlayer extends StatefulWidget {
   final bool lock;
   final bool caption;
   final BoxFit aspect;
+  final bool isLive;
   final PositionedOptions options;
 
   @override
@@ -110,6 +112,8 @@ class KenjiPlayerState extends State<KenjiPlayer> {
         autoPlay: widget.autoPlay,
         seekTo: widget.seekTo,
       );
+      
+      _controller.setIsLive(widget.isLive);
 
       if (hasAdTagUrl) {
         _controller.video?.addListener(() {
@@ -216,7 +220,9 @@ class KenjiPlayerState extends State<KenjiPlayer> {
                     opEnd: widget.opEnd,
                     edStart: widget.edStart,
                     edEnd: widget.edEnd,
-                    options: widget.options),
+                    options: widget.options,
+                    isLive: widget.isLive,
+                    ),
               ),
             ],
             builder: (context, child) {
